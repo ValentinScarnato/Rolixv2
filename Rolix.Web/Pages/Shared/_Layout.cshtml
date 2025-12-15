@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ROLIX</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="layout-root">
+
+    <header class="rolix-header">
+        <div class="rolix-header-inner">
+            <a asp-page="/Index" class="rolix-logo">
+                <img src="~/images/rolix-logo.png" alt="ROLIX" />
+            </a>
+
+            <nav class="rolix-nav">
+                <a asp-page="/Index">Accueil</a>
+                <a asp-page="/Products/Index">Collection</a>
+                <a asp-page="/About">Maison</a>
+                <a asp-page="/Contact">Contact</a>
+                <a asp-page="/Account/Index" class="nav-cta">Mon Compte</a>
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="rolix-main">
+        @RenderBody()
+    </main>
+
+    <footer class="rolix-footer">
+        <div class="rolix-footer-inner">
+            <div class="footer-brand">
+                <h3 style="margin-bottom:10px;">ROLIX</h3>
+                <p>&copy; 2025 Rolix Watches. <br>L'excellence suisse.</p>
+            </div>
+            <div class="footer-links">
+                <h5>Collection</h5>
+                <a href="#">Hommes</a>
+                <a href="#">Femmes</a>
+                <a href="#">Éditions Limitées</a>
+            </div>
+            <div class="footer-links">
+                <h5>Maison</h5>
+                <a href="#">Notre Histoire</a>
+                <a href="#">Savoir-faire</a>
+                <a href="#">Carrières</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

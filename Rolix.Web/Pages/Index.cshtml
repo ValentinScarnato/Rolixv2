@@ -1,0 +1,145 @@
+﻿@page
+@{
+    ViewData["Title"] = "Rolix - L'Excellence Horlogère";
+}
+
+<div class="maison-hero">
+    <div class="maison-hero-overlay"></div>
+    <img src="https://images.unsplash.com/photo-1600003014637-ff82a275e191?q=80&w=1011&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+         alt="Mécanisme Rolix" class="maison-hero-bg parallax-img">
+
+    <div class="maison-hero-content">
+        <h1 class="hero-title">Le Temps, <br> Sublimé.</h1>
+        <p class="subtitle fade-in-up delay-200">Perpétuer l'excellence depuis 1905</p>
+
+        <div class="hero-buttons fade-in-up delay-400">
+            <a asp-page="/Products/Index" class="btn-primary">
+                Voir la collection
+            </a>
+
+            <a asp-page="/About" class="btn-secondary-glass">
+                Notre histoire
+            </a>
+        </div>
+
+        <div class="scroll-indicator fade-in-up delay-600">
+            <div class="line"></div>
+        </div>
+    </div>
+</div>
+
+<div class="main-container" style="padding-top: 0;">
+
+    <section id="notre-histoire" class="luxury-split-section reveal-on-scroll">
+        <div class="split-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1622434641406-a158123450f9?q=80&w=1404&auto=format&fit=crop" alt="Atelier Horloger">
+            <div class="floating-frame"></div>
+        </div>
+        <div class="split-text-content">
+            <span class="chapter-title">Chapitre I</span>
+            <h2>Une Vision Perpétuelle</h2>
+            <p>
+                Tout commence par une quête d'absolu. Fondée au début du XXe siècle, la Maison Rolix n'a eu de cesse de repousser les limites de la précision chronométrique.
+            </p>
+            <p>
+                Plus qu'une montre, nous façonnons des instruments destinés à accompagner les explorateurs, les visionnaires et ceux qui façonnent le monde de demain.
+            </p>
+        </div>
+    </section>
+
+    <section class="quote-section reveal-on-scroll">
+        <div class="quote-icon">“</div>
+        <h3>
+            Nous ne construisons pas seulement des montres.<br>
+            Nous gardons la mesure de vos instants les plus précieux.
+        </h3>
+        <span class="quote-author">— Henri Rolix, Fondateur</span>
+    </section>
+
+    <section class="luxury-split-section reverse reveal-on-scroll">
+        <div class="split-text-content">
+            <span class="chapter-title">Chapitre II</span>
+            <h2>L'Or & La Main</h2>
+            <p>
+                Dans le secret de nos ateliers genevois, chaque composant est poli, assemblé et contrôlé à la main. L'éclat de notre or 18 carats, fondu dans nos propres fonderies, est unique.
+            </p>
+            <p>
+                Cette alchimie entre tradition artisanale et technologie de pointe donne naissance à une esthétique inaltérable.
+            </p>
+        </div>
+        <div class="split-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=1374&auto=format&fit=crop" alt="Orfèvrerie">
+            <div class="floating-frame frame-gold"></div>
+        </div>
+    </section>
+
+    <section class="gallery-section reveal-on-scroll">
+        <h2>L'Excellence en Images</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item item-1">
+                <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=1480&auto=format&fit=crop" alt="Montre Luxe 1">
+            </div>
+            <div class="gallery-item item-2">
+                <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?q=80&w=1374&auto=format&fit=crop" alt="Montre Luxe 2">
+            </div>
+            <div class="gallery-item item-3">
+                <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1399&auto=format&fit=crop" alt="Montre Luxe 3">
+            </div>
+        </div>
+
+        <div class="marquee-wrapper reveal-on-scroll">
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <span class="marquee-item">PRECISION</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">ELEGANCE</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">HERITAGE</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">SWISS MADE</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">PRECISION</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">ELEGANCE</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">HERITAGE</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">SWISS MADE</span>
+                <span class="separator">✦</span>
+                 <span class="marquee-item">PRECISION</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">ELEGANCE</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">HERITAGE</span>
+                <span class="separator">✦</span>
+                <span class="marquee-item">SWISS MADE</span>
+                <span class="separator">✦</span>
+            </div>
+        </div>
+    </div>
+    </section>
+
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const elements = document.querySelectorAll('.reveal-on-scroll');
+        elements.forEach(el => observer.observe(el));
+    });
+</script>

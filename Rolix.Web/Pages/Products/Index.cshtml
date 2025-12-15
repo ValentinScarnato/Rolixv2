@@ -1,0 +1,102 @@
+﻿@page
+@model Rolix.Web.Pages.Products.IndexModel
+
+@{
+    ViewData["Title"] = "La Collection";
+}
+
+<div class="collection-hero">
+    <div class="maison-hero-overlay"></div>
+    <img src="https://images.unsplash.com/photo-1704783308748-9e5396e0956d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+         alt="Collection Rolix" class="maison-hero-bg parallax-img">
+
+    <div class="maison-hero-content">
+        <h1 class="hero-title fade-in-up ">Nos Garde-Temps</h1>
+        <p class="subtitle fade-in-up delay-200">L'alliance parfaite de l'ingénierie et de l'émotion.</p>
+    </div>
+</div>
+
+<div class="main-container" style="position: relative; z-index: 10;">
+    <div class="filters-glass-bar fade-in-up delay-400">
+        <form method="get" class="filters-form">
+
+            <div class="search-group">
+                <input type="text" name="SearchString" value="@Model.SearchString" 
+                       placeholder="Rechercher un modèle..." class="glass-input-clean" />
+                <button type="submit" class="search-btn-clean">🔍</button>
+            </div>
+
+            <div class="vertical-separator"></div>
+
+            <div class="filter-group">
+                <select name="Category" onchange="this.form.submit()" class="glass-select-clean">
+                    <option value="">Toutes les collections</option>
+                    <option value="1" selected="@(Model.Category == 1)">Homme</option>
+                    <option value="2" selected="@(Model.Category == 2)">Femme</option>
+                    <option value="3" selected="@(Model.Category == 3)">Enfant</option>
+                </select>
+            </div>
+
+            <div class="vertical-separator"></div>
+
+            <div class="sort-group">
+                <select name="SortOrder" onchange="this.form.submit()" class="glass-select-clean">
+                    <option value="name_asc" selected="@(Model.SortOrder == "name_asc")">Nom (A-Z)</option>
+                    <option value="price_asc" selected="@(Model.SortOrder == "price_asc")">Prix croissant</option>
+                    <option value="price_desc" selected="@(Model.SortOrder == "price_desc")">Prix décroissant</option>
+                </select>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="main-container">
+    @if (Model.Products.Count > 0)
+    {
+            <div class="products-grid reveal-on-scroll">
+            @foreach (var product in Model.Products)
+            {
+                        <a asp-page="/Products/Details" asp-route-id="@product.Id" class="product-card-link">
+                            <div class="product-card-luxury">
+                                <div class="card-badge">Rolix</div>
+
+                                <div class="card-image-wrapper">
+                                    <img src="@product.ImageBase64" alt="@product.Name" />
+                                </div>
+
+                                <div class="card-info">
+                                    <h3>@product.Name</h3>
+                                    <div class="card-separator"></div>
+                                    <p class="price">@product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))</p>
+                                    <span class="view-btn">Découvrir</span>
+                                </div>
+                            </div>
+                        </a>
+            }
+            </div>
+    }
+    else
+    {
+            <div class="empty-state reveal-on-scroll">
+                <div class="empty-icon">⌚</div>
+                <h3>Aucun modèle trouvé</h3>
+                <p>Essayez de modifier vos critères de recherche.</p>
+                <a asp-page="/Products/Index" class="btn-secondary-glass">Réinitialiser le catalogue</a>
+            </div>
+    }
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+    });
+</script>
