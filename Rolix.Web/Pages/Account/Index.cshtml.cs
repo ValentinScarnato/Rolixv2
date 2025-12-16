@@ -18,9 +18,6 @@ namespace Rolix.Web.Pages.Account
         [BindProperty]
         public LoginInput Input { get; set; } = new();
 
-        [BindProperty]
-        public RegisterInput Register { get; set; } = new();
-
         [BindProperty(SupportsGet = true)]
         public string? ReturnUrl { get; set; }
 
@@ -36,8 +33,6 @@ namespace Rolix.Web.Pages.Account
 
         public IActionResult OnPostLogin()
         {
-            ClearRegisterValidation();
-
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -51,9 +46,18 @@ namespace Rolix.Web.Pages.Account
                 return Page();
             }
 
-            SignIn(contact);
+            HttpContext.Session.SetString(SessionKeys.ContactId, contact.Id.ToString());
+            HttpContext.Session.SetString(SessionKeys.ContactName, contact.DisplayName);
+            HttpContext.Session.SetString(SessionKeys.ContactEmail, contact.Email ?? string.Empty);
 
-            return RedirectAfterSuccess("Connexion réussie.");
+            TempData["Success"] = "Connexion réussie.";
+
+            if (!string.IsNullOrEmpty(ReturnUrl))
+            {
+                return Redirect(ReturnUrl);
+            }
+
+            return RedirectToPage();
         }
 
         public IActionResult OnPostLogout()
@@ -68,67 +72,6 @@ namespace Rolix.Web.Pages.Account
 
             return RedirectToPage();
         }
-
-        public IActionResult OnPostRegister()
-        {
-            ClearLoginValidation();
-
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            var existing = _contactService.GetByEmail(Register.Email);
-
-            if (existing != null)
-            {
-                ModelState.AddModelError(string.Empty, "Un compte existe déjà avec cet email. Connectez-vous ou utilisez une autre adresse.");
-                return Page();
-            }
-
-            var contact = _contactService.Create(new Contact
-            {
-                FirstName = Register.FirstName,
-                LastName = Register.LastName,
-                Email = Register.Email,
-            });
-
-            SignIn(contact);
-
-            return RedirectAfterSuccess("Compte créé et connecté.");
-        }
-
-        private IActionResult RedirectAfterSuccess(string message)
-        {
-            TempData["Success"] = message;
-
-            if (!string.IsNullOrEmpty(ReturnUrl))
-            {
-                return Redirect(ReturnUrl);
-            }
-
-            return RedirectToPage();
-        }
-
-        private void SignIn(Contact contact)
-        {
-            HttpContext.Session.SetString(SessionKeys.ContactId, contact.Id.ToString());
-            HttpContext.Session.SetString(SessionKeys.ContactName, contact.DisplayName);
-            HttpContext.Session.SetString(SessionKeys.ContactEmail, contact.Email ?? string.Empty);
-        }
-
-        private void ClearRegisterValidation()
-        {
-            ModelState.Remove($"{nameof(Register)}.{nameof(Register.FirstName)}");
-            ModelState.Remove($"{nameof(Register)}.{nameof(Register.LastName)}");
-            ModelState.Remove($"{nameof(Register)}.{nameof(Register.Email)}");
-        }
-
-        private void ClearLoginValidation()
-        {
-            ModelState.Remove($"{nameof(Input)}.{nameof(Input.Email)}");
-            ModelState.Remove($"{nameof(Input)}.{nameof(Input.LastName)}");
-        }
     }
 
     public class LoginInput
@@ -139,18 +82,5 @@ namespace Rolix.Web.Pages.Account
 
         [Required(ErrorMessage = "Le nom est requis.")]
         public string LastName { get; set; } = string.Empty;
-    }
-
-    public class RegisterInput
-    {
-        [Required(ErrorMessage = "Le prénom est requis.")]
-        public string FirstName { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Le nom est requis.")]
-        public string LastName { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "L'email est requis.")]
-        [EmailAddress(ErrorMessage = "Format d'email invalide.")]
-        public string Email { get; set; } = string.Empty;
     }
 }

@@ -1,4 +1,3 @@
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Rolix.Web.Models;
 
@@ -32,60 +31,11 @@ public class ContactService
         var result = client.RetrieveMultiple(query);
         var entity = result.Entities.FirstOrDefault();
 
-        return entity != null ? MapContact(entity) : null;
-    }
-
-    public Contact? GetByEmail(string email)
-    {
-        var client = _dataverse.GetClient();
-
-        var query = new QueryExpression("contact")
+        if (entity == null)
         {
-            ColumnSet = new ColumnSet("contactid", "firstname", "lastname", "emailaddress1"),
-        };
-
-        query.Criteria.AddCondition("emailaddress1", ConditionOperator.Equal, email);
-
-        var result = client.RetrieveMultiple(query);
-        var entity = result.Entities.FirstOrDefault();
-
-        return entity != null ? MapContact(entity) : null;
-    }
-
-    public Contact Create(Contact contact)
-    {
-        var client = _dataverse.GetClient();
-
-        var entity = new Entity("contact");
-
-        if (!string.IsNullOrWhiteSpace(contact.FirstName))
-        {
-            entity["firstname"] = contact.FirstName;
+            return null;
         }
 
-        if (!string.IsNullOrWhiteSpace(contact.LastName))
-        {
-            entity["lastname"] = contact.LastName;
-        }
-
-        if (!string.IsNullOrWhiteSpace(contact.Email))
-        {
-            entity["emailaddress1"] = contact.Email;
-        }
-
-        var id = client.Create(entity);
-
-        return new Contact
-        {
-            Id = id,
-            FirstName = contact.FirstName,
-            LastName = contact.LastName,
-            Email = contact.Email,
-        };
-    }
-
-    private static Contact MapContact(Entity entity)
-    {
         return new Contact
         {
             Id = entity.Id,

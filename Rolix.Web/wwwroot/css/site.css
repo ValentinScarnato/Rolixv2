@@ -402,6 +402,22 @@ section.features-section {
     color: #d7ffed;
 }
 
+.alert {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-weight: 600;
+}
+
+.alert-success {
+    border-color: rgba(52, 211, 153, 0.5);
+    background: rgba(52, 211, 153, 0.15);
+    color: #d7ffed;
+}
+
+/* 2. Wrapper pour aligner le bouton retour à gauche, hors de la carte */
 .navigation-wrapper {
     display: flex;
     align-items: center;
@@ -464,27 +480,21 @@ section.features-section {
     box-shadow: var(--glass-shadow);
 }
 
-.product-visual-panel {
-    position: relative;
-    background: radial-gradient(circle at 25% 20%, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
-                linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 30px;
-    min-height: 420px;
-    overflow: hidden;
-}
-
-.product-visual {
+.product-details-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    height: 400px;
     width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 30px 60px rgba(0,0,0,0.55));
-    position: relative;
-    z-index: 2;
+    border-radius: 20px;
+    align-self: center;
 }
 
-.product-visual.placeholder {
+/* 5. Colonne Image */
+/* --- Modif : Colonne Image qui contient maintenant le bouton --- */
+.product-image-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -784,6 +794,107 @@ section.features-section {
     }
 
     .account-connected {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* =========================
+   8. MON COMPTE / CONNEXION
+.account-wrapper {
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.account-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 40px;
+    box-shadow: var(--glass-shadow);
+}
+
+.account-header .lead {
+    color: var(--text-secondary);
+    margin-top: 8px;
+}
+
+.connected-panel {
+    margin-top: 20px;
+    padding: 18px 20px;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: rgba(255,255,255,0.03);
+}
+
+.login-form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.login-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.validation-summary {
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 99, 132, 0.08);
+    border: 1px solid rgba(255, 99, 132, 0.35);
+}
+
+.muted {
+    color: rgba(255,255,255,0.6);
+}
+
+.account-help {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.account-help-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: var(--glass-shadow);
+}
+
+.account-help-card ul {
+    padding-left: 18px;
+    margin: 10px 0;
+    color: var(--text-secondary);
+}
+
+.account-help-card.secondary {
+    background: rgba(255,255,255,0.02);
+}
+
+@media (max-width: 900px) {
+    .account-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .connected-panel {
         flex-direction: column;
         align-items: flex-start;
     }
