@@ -102,7 +102,7 @@ h1, h2, h3, h4 {
     background: rgba(86, 61, 124, 0.85);
     /* On ajoute un léger dégradé pour faire "bijou" */
 
-    background: linear-gradient(90deg, rgba(70, 50, 100, 0.9) 0%, rgba(100, 75, 140, 0.9) 100%);
+    background: linear-gradient(90deg, rgba(86, 64, 124, 0.9) 0%, rgba(128, 98, 172, 0.9) 100%);
     /* Flou important pour lisser le tout */
 
     backdrop-filter: blur(20px);
@@ -302,6 +302,7 @@ h1, h2, h3, h4 {
     margin-bottom: 24px;
     background: linear-gradient( 110deg, #FFFFFF 20%, var(--accent-gold) 40%, #E0D4F5 60%, #FFFFFF 80% );
     background-size: 200% auto;
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shineText 5s linear infinite;
@@ -371,6 +372,172 @@ h1, h2, h3, h4 {
         box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         text-shadow: 0 0 5px rgba(255,255,255,0.5);
     }
+
+
+
+.contact-quick-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+
+
+.contact-section {
+    padding: 40px 0 90px;
+}
+
+
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+
+
+.contact-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+    padding: 40px;
+}
+
+
+
+.contact-card-header h3 {
+    margin-bottom: 0;
+}
+
+
+
+.contact-divider {
+    height: 1px;
+    width: 70px;
+    margin: 16px 0 26px;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.85), rgba(212, 175, 55, 0.0));
+}
+
+
+
+.contact-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 16px;
+    align-items: start;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+
+
+    .contact-item:last-of-type {
+        border-bottom: none;
+    }
+
+
+
+.contact-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--accent-gold);
+    display: inline-flex;
+}
+
+
+
+    .contact-icon svg {
+        width: 28px;
+        height: 28px;
+        display: block;
+    }
+
+
+
+.sub-text {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+
+
+.contact-highlight {
+    margin-top: 22px;
+    padding: 18px 18px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.10), rgba(159, 122, 234, 0.10));
+    border: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+
+
+.contact-highlight-title {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 1.15rem;
+}
+
+
+
+.contact-highlight-subtitle {
+    margin-top: 6px;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.95rem;
+}
+
+
+
+.contact-map {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+
+
+    .contact-map:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.10);
+        border-color: rgba(212, 175, 55, 0.35);
+    }
+
+
+
+.contact-disclaimer {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+    text-align: center;
+}
+
+
+
+@media (max-width: 900px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-card {
+        padding: 28px;
+    }
+}
 
 
 
@@ -1019,6 +1186,7 @@ section.features-section {
         font-size: 3rem;
         margin-bottom: 24px;
         background: linear-gradient(to right, #fff, var(--accent));
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -1321,6 +1489,7 @@ section.features-section {
         margin-bottom: 10px;
         text-shadow: 0 10px 30px rgba(0,0,0,0.5);
         background: linear-gradient(to right, #fff, #E0D4F5);
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -2258,6 +2427,7 @@ section.features-section {
     line-height: 1.1;
     margin-bottom: 15px;
     background: linear-gradient(to right, #fff, #E0D4F5);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

@@ -3,96 +3,137 @@
     ViewData["Title"] = "Service Clientèle";
 }
 
-<div style="text-align: center; padding: 80px 20px 40px;">
-    <span class="since-badge fade-in-up">Rolix Genève</span>
-    <h1 class="hero-title fade-in-up delay-200" style="font-size: 3.5rem; margin-top: 20px;">Conciergerie</h1>
-    <p class="fade-in-up delay-400" style="color: var(--text-secondary); max-width: 500px; margin: 0 auto;">
-        Nos ambassadeurs sont à votre entière disposition pour vous guider dans l'acquisition ou l'entretien de votre garde-temps.
-    </p>
-</div>
+<section class="hero-section contact-hero">
+    <div class="ambient-light light-1"></div>
+    <div class="ambient-light light-2"></div>
 
-<div class="main-container">
-    <div class="contact-grid">
+    <div class="hero-content">
+        <span class="since-badge fade-in-up">Service Clientèle</span>
+        <h1 class="hero-title fade-in-up delay-200">Conciergerie</h1>
+        <p class="hero-subtitle fade-in-up delay-400">
+            Nos ambassadeurs vous accompagnent avec discrétion, précision et exigence — pour l’acquisition, l’entretien et le suivi de votre garde-temps.
+        </p>
 
-        <div class="contact-card info-card fade-in-up delay-600">
-            <h3>La Boutique</h3>
-            <div class="contact-divider"></div>
-
-            <div class="contact-item">
-                <span class="icon">📍</span>
-                <div>
-                    <strong>Flagship Store</strong>
-                    <p>123 Avenue de l'Horlogerie<br>1204 Geneviève, Suisse</p>
-                </div>
-            </div>
-
-            <div class="contact-item">
-                <span class="icon">📞</span>
-                <div>
-                    <strong>Téléphone</strong>
-                    <p>+41 22 555 01 02</p>
-                    <span class="sub-text">Du lundi au samedi, 10h - 19h</span>
-                </div>
-            </div>
-
-            <div class="contact-item">
-                <span class="icon">✉️</span>
-                <div>
-                    <strong>Service Client</strong>
-                    <p>service@rolix.com</p>
-                </div>
-            </div>
-
-            <div class="map-placeholder">
-                <span>Voir sur la carte</span>
-            </div>
+        <div class="contact-quick-actions fade-in-up delay-600">
+            <a class="btn-secondary-glass" href="mailto:service@rolix.com">Écrire au service</a>
+            <a class="btn-primary" href="#contact-form">Envoyer une demande</a>
         </div>
-
-        <div class="contact-card form-card fade-in-up delay-600">
-            <h3>Envoyez-nous une demande</h3>
-
-            <form class="luxury-form">
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Prénom</label>
-                        <input type="text" class="glass-input-clean" placeholder="Votre prénom">
-                    </div>
-                    <div class="form-group">
-                        <label>Nom</label>
-                        <input type="text" class="glass-input-clean" placeholder="Votre nom">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" class="glass-input-clean" placeholder="votre@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label>Sujet</label>
-                    <select class="glass-select-clean" style="width: 100%;">
-                        <option>Demande d'information</option>
-                        <option>Service Après-Vente</option>
-                        <option>Prendre Rendez-vous</option>
-                        <option>Presse & Partenariat</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Message</label>
-                    <textarea class="glass-input-clean" rows="4" placeholder="Comment pouvons-nous vous aider ?"></textarea>
-                </div>
-
-                <button type="submit" class="btn-primary-large" style="margin-top: 20px;">
-                    Envoyer le message
-                </button>
-
-            </form>
-        </div>
-
     </div>
-</div>
+</section>
+
+<section class="contact-section">
+    <div class="main-container">
+        <div class="contact-grid">
+
+            <div class="contact-card info-card fade-in-up delay-600">
+                <div class="contact-card-header">
+                    <h3>La Boutique</h3>
+                    <div class="contact-divider"></div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22s7-4.5 7-12a7 7 0 1 0-14 0c0 7.5 7 12 7 12Z" stroke="currentColor" stroke-width="1.6" />
+                            <path d="M12 13.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="1.6" />
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Flagship Store</strong>
+                        <p>123 Avenue de l'Horlogerie<br>1204 Genève, Suisse</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 4h3l2 5-2 1c1 2.5 3.5 5 6 6l1-2 5 2v3c0 1-1 2-2 2-9 0-16-7-16-16 0-1 1-2 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Téléphone</strong>
+                        <p>+41 22 555 01 02</p>
+                        <span class="sub-text">Du lundi au samedi, 10h - 19h</span>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 7.5 12 13l8-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M4 7.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M6 6h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Service Client</strong>
+                        <p>service@rolix.com</p>
+                    </div>
+                </div>
+
+                <div class="contact-highlight">
+                    <div class="contact-highlight-title">Rendez-vous privé</div>
+                    <div class="contact-highlight-subtitle">Sur demande — confidentialité et accueil dédié</div>
+                </div>
+
+                <a class="contact-map" href="https://www.google.com/maps" target="_blank" rel="noreferrer">
+                    Voir sur la carte
+                </a>
+            </div>
+
+            <div id="contact-form" class="contact-card form-card fade-in-up delay-600">
+                <div class="contact-card-header">
+                    <h3>Envoyez-nous une demande</h3>
+                    <div class="contact-divider"></div>
+                </div>
+
+                <form class="luxury-form">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Prénom</label>
+                            <input type="text" class="glass-input-clean" placeholder="Votre prénom">
+                        </div>
+                        <div class="form-group">
+                            <label>Nom</label>
+                            <input type="text" class="glass-input-clean" placeholder="Votre nom">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="glass-input-clean" placeholder="votre@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sujet</label>
+                        <select class="glass-select-clean">
+                            <option>Demande d'information</option>
+                            <option>Service Après-Vente</option>
+                            <option>Prendre Rendez-vous</option>
+                            <option>Presse & Partenariat</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="glass-input-clean" rows="5" placeholder="Comment pouvons-nous vous aider ?"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary-large">
+                        Envoyer le message
+                    </button>
+
+                    <div class="contact-disclaimer">
+                        Nous répondons généralement sous 24–48h ouvrées.
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
