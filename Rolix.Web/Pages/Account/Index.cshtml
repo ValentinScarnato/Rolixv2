@@ -1,7 +1,85 @@
-﻿@page
+@page
+@model Rolix.Web.Pages.Account.IndexModel
+@using Rolix.Web.Models
 @{
     ViewData["Title"] = "Mon compte";
 }
 
-<h1>Mon compte</h1>
-<p>Accédez à vos garanties, commandes et demandes SAV.</p>
+<div class="account-wrapper">
+    <div class="account-card">
+        <div class="account-header">
+            <p class="eyebrow">Mon compte</p>
+            <h1>Connexion client</h1>
+            <p class="lead">Identifiez-vous pour demander un devis ou suivre vos demandes.</p>
+        </div>
+
+        @if (TempData["Success"] is string success)
+        {
+            <div class="alert alert-success">@success</div>
+        }
+
+        @if (Model.IsAuthenticated)
+        {
+            <div class="connected-panel">
+                <div>
+                    <p class="eyebrow">Connecté</p>
+                    <h3>@Model.ContactName</h3>
+                    <p class="muted">@Model.ContactEmail</p>
+                </div>
+                <form method="post" asp-page-handler="Logout">
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                    <button type="submit" class="btn-secondary-glass">Se déconnecter</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <form method="post" class="login-form" asp-page-handler="Login">
+                <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+
+                <div class="form-group">
+                    <label asp-for="Input.Email">Email professionnel (Dataverse)</label>
+                    <input asp-for="Input.Email" class="glass-input-clean" placeholder="prenom.nom@exemple.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.LastName">Nom de famille</label>
+                    <input asp-for="Input.LastName" class="glass-input-clean" placeholder="Nom tel que stocké dans Dataverse" />
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+
+                @if (!ViewContext.ModelState.IsValid)
+                {
+                    <div class="text-danger validation-summary">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
+
+                <button type="submit" class="btn-primary-large">Connexion sécurisée</button>
+            </form>
+        }
+    </div>
+
+    <div class="account-help">
+        <div class="account-help-card">
+            <h3>Pourquoi se connecter ?</h3>
+            <ul>
+                <li>Demander un devis personnalisé sur chaque modèle.</li>
+                <li>Retrouver vos échanges et demandes précédentes.</li>
+                <li>Synchronisation directe avec vos informations Dataverse (table Contact).</li>
+            </ul>
+        </div>
+        <div class="account-help-card secondary">
+            <h3>Assistance</h3>
+            <p>Si vous ne parvenez pas à vous connecter, contactez votre interlocuteur Rolix ou vérifiez votre adresse enregistrée dans Dataverse.</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
