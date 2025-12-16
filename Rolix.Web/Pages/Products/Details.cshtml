@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model Rolix.Web.Pages.Products.DetailsModel
 @{
     ViewData["Title"] = Model.Product?.Name;
@@ -8,92 +8,104 @@
 
 @if (Model.Product != null)
 {
-        <div class="product-details-container">
+    <div class="product-details-container">
+        @if (TempData["QuoteSuccess"] is string quoteMessage)
+        {
+            <div class="alert alert-success">@quoteMessage</div>
+        }
 
-            <div class="product-details-card fade-in-up">
+        <div class="navigation-wrapper">
+            <a asp-page="/Products/Index" class="btn-back-catalog">
+                &larr; Retour au catalogue
+            </a>
+        </div>
 
-                <div class="product-image-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; height: 100%; position: relative;">
-
-                    <a asp-page="/Products/Index" class="btn-back-catalog" style="margin-bottom: 30px; align-self: flex-start;">
-                        &larr; Retour au catalogue
-                    </a>
-
-                    <div class="watch-glow"></div>
+        <div class="product-details-card fade-in-up">
+            <div class="product-image-wrapper">
+                <div class="watch-glow"></div>
 
                 @if (!string.IsNullOrEmpty(Model.Product.ImageBase64))
                 {
-                            <img src="@Model.Product.ImageBase64" 
-                                 alt="@Model.Product.Name" 
-                                 class="product-details-image" 
-                                 style="align-self: center; margin-top: auto; margin-bottom: auto; z-index: 2;" />
+                    <img src="@Model.Product.ImageBase64"
+                         alt="@Model.Product.Name"
+                         class="product-details-image" />
                 }
                 else
                 {
-                            <div class="product-details-image" style="display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); color: #fff; height: 400px; width: 100%; border-radius: 20px; align-self: center;">
-                                <span>Pas d'image</span>
-                            </div>
+                    <div class="product-details-image product-details-placeholder">
+                        <span>Pas d'image</span>
+                    </div>
                 }
+            </div>
+
+            <div class="product-details-info">
+                <div class="fade-in-up delay-200">
+                    <span class="product-reference">Réf. 126233 (exemple)</span>
+                    <h1 class="product-title">@Model.Product.Name</h1>
+
+                    <div class="price-wrapper">
+                        <span class="price">
+                            @Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))
+                        </span>
+                        <span class="tax-label">TVA incluse</span>
+                    </div>
                 </div>
 
-                <div class="product-details-info">
-
-                    <div class="fade-in-up delay-200">
-                        <span class="product-reference">Réf. 126233 (Exemple)</span>
-                        <h1 class="product-title">@Model.Product.Name</h1>
-
-                        <div class="price-wrapper">
-                            <span class="price">
-                            @Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))
-                            </span>
-                            <span class="tax-label">TVA incluse</span>
-                        </div>
-                    </div>
-
-                    <div class="separator-line fade-in-up delay-400"></div>
+                <div class="separator-line fade-in-up delay-400"></div>
 
                 @if (!string.IsNullOrEmpty(Model.Product.Description))
                 {
-                            <div class="description-block fade-in-up delay-400">
-                                <h3>L'Esprit du Modèle</h3>
-                                <p class="description">
+                    <div class="description-block fade-in-up delay-400">
+                        <h3>L'Esprit du Modèle</h3>
+                        <p class="description">
                             @Model.Product.Description
-                                </p>
-                            </div>
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <div class="description-block fade-in-up delay-400">
+                        <h3>Description</h3>
+                        <p class="description muted">Aucune description n'est disponible pour ce modèle.</p>
+                    </div>
                 }
 
-                    <div class="specs-grid fade-in-up delay-600">
-                        <div class="spec-item">
-                            <span class="spec-label">Diamètre</span>
-                            <span class="spec-value">41 mm</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Matériau</span>
-                            <span class="spec-value">Oystersteel</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Mouvement</span>
-                            <span class="spec-value">Perpetual</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Étanchéité</span>
-                            <span class="spec-value">100 mètres</span>
-                        </div>
+                <div class="specs-grid fade-in-up delay-600">
+                    <div class="spec-item">
+                        <span class="spec-label">Diamètre</span>
+                        <span class="spec-value">41 mm</span>
                     </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Matériau</span>
+                        <span class="spec-value">Oystersteel</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Mouvement</span>
+                        <span class="spec-value">Perpetual</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Étanchéité</span>
+                        <span class="spec-value">100 mètres</span>
+                    </div>
+                </div>
 
-                    <div class="action-block fade-in-up delay-600" style="margin-top: 40px;">
-                        <button class="btn-primary-large">
+                <div class="action-block fade-in-up delay-600">
+                    <form method="post" asp-page-handler="Quote" class="quote-form">
+                        <input type="hidden" name="id" value="@Model.Product.Id" />
+                        <button type="submit" class="btn-primary-large">
                             Demander un devis
                         </button>
+                    </form>
 
-                        <div class="trust-signals">
-                            <span><span style="color:var(--accent-gold);">✔</span> Garantie 5 ans</span>
-                            <span><span style="color:var(--accent-gold);">✔</span> Livraison Sécurisée</span>
-                        </div>
+                    <div class="trust-signals">
+                        <span><span class="accent-check">✔</span> Garantie 5 ans</span>
+                        <span><span class="accent-check">✔</span> Livraison sécurisée</span>
+                        <span><span class="accent-check">✔</span> Équipe conciergerie dédiée</span>
                     </div>
-
                 </div>
             </div>
         </div>
+    </div>
 }
 else
 {
