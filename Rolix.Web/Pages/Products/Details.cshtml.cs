@@ -44,9 +44,19 @@ public class DetailsModel : PageModel
             return RedirectToPage("/Account/Index", new { returnUrl });
         }
 
-        _quoteService.CreateQuoteRequest(Guid.Parse(contactId), Product, contactEmail);
+        var result = _quoteService.CreateQuote(Guid.Parse(contactId), Product);
 
-        TempData["QuoteSuccess"] = "Votre demande de devis a été transmise. Notre équipe vous contactera rapidement.";
+        if (result.QuoteId == Guid.Empty)
+        {
+            TempData["QuoteWarning"] = result.Warning ?? "Vous avez déjà un devis en attente pour ce produit.";
+            return RedirectToPage(new { id });
+        }
+
+        TempData["QuoteSuccess"] = "Votre devis a été créé.";
+        if (!string.IsNullOrWhiteSpace(result.Warning))
+        {
+            TempData["QuoteWarning"] = result.Warning;
+        }
 
         return RedirectToPage(new { id });
     }

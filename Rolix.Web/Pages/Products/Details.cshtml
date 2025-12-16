@@ -9,19 +9,20 @@
 @if (Model.Product != null)
 {
     <div class="product-details-container">
+
         @if (TempData["QuoteSuccess"] is string quoteMessage)
         {
-            <div class="alert alert-success">@quoteMessage</div>
+            <div class="alert alert-success" style="margin-bottom: 20px;">@quoteMessage</div>
         }
 
-        <div class="navigation-wrapper">
-            <a asp-page="/Products/Index" class="btn-back-catalog">
-                &larr; Retour au catalogue
-            </a>
-        </div>
-
         <div class="product-details-card fade-in-up">
+
             <div class="product-image-wrapper">
+
+                <a asp-page="/Products/Index" class="btn-back-catalog">
+                    &larr; Retour au catalogue
+                </a>
+
                 <div class="watch-glow"></div>
 
                 @if (!string.IsNullOrEmpty(Model.Product.ImageBase64))
@@ -32,41 +33,8 @@
                 }
                 else
                 {
-                    <div class="product-details-image product-details-placeholder">
+                    <div class="product-details-image-placeholder">
                         <span>Pas d'image</span>
-                    </div>
-                }
-            </div>
-
-            <div class="product-details-info">
-                <div class="fade-in-up delay-200">
-                    <span class="product-reference">Réf. 126233 (exemple)</span>
-                    <h1 class="product-title">@Model.Product.Name</h1>
-
-                    <div class="price-wrapper">
-                        <span class="price">
-                            @Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))
-                        </span>
-                        <span class="tax-label">TVA incluse</span>
-                    </div>
-                </div>
-
-                <div class="separator-line fade-in-up delay-400"></div>
-
-                @if (!string.IsNullOrEmpty(Model.Product.Description))
-                {
-                    <div class="description-block fade-in-up delay-400">
-                        <h3>L'Esprit du Modèle</h3>
-                        <p class="description">
-                            @Model.Product.Description
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <div class="description-block fade-in-up delay-400">
-                        <h3>Description</h3>
-                        <p class="description muted">Aucune description n'est disponible pour ce modèle.</p>
                     </div>
                 }
 
@@ -88,6 +56,36 @@
                         <span class="spec-value">100 mètres</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="product-details-info">
+
+                <div class="fade-in-up delay-200">
+                    <span class="product-reference">Réf. 126233 (Exemple)</span>
+                    <h1 class="product-title">@Model.Product.Name</h1>
+
+                    <div class="price-wrapper">
+                        <span class="price">
+                            @Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))
+                        </span>
+                        <span class="tax-label">TVA incluse</span>
+                    </div>
+                </div>
+
+                <div class="separator-line fade-in-up delay-400"></div>
+
+                <div class="description-block fade-in-up delay-400">
+                    @if (!string.IsNullOrEmpty(Model.Product.Description))
+                    {
+                        <h3>L'Esprit du Modèle</h3>
+                        <p class="description">@Model.Product.Description</p>
+                    }
+                    else
+                    {
+                        <h3>Description</h3>
+                        <p class="description muted">Aucune description n'est disponible pour ce modèle.</p>
+                    }
+                </div>
 
                 <div class="action-block fade-in-up delay-600">
                     <form method="post" asp-page-handler="Quote" class="quote-form">
@@ -98,29 +96,19 @@
                     </form>
 
                     <div class="trust-signals">
-                        <span><span class="accent-check">✔</span> Garantie 5 ans</span>
-                        <span><span class="accent-check">✔</span> Livraison sécurisée</span>
-                        <span><span class="accent-check">✔</span> Équipe conciergerie dédiée</span>
+                        <span><span style="color:var(--accent-gold);">✔</span> Garantie 5 ans</span>
+                        <span><span style="color:var(--accent-gold);">✔</span> Livraison Sécurisée</span>
                     </div>
                 </div>
-                <div class="service-strip">
-                    <div>
-                        <p class="spec-label">Services</p>
-                        <p class="spec-value">Essayage privé & livraison sécurisée</p>
-                    </div>
-                    <div>
-                        <p class="spec-label">Support</p>
-                        <p class="spec-value">Conciergerie dédiée 6j/7</p>
-                    </div>
-                </div>
-            </section>
+
+            </div>
         </div>
     </div>
 }
 else
 {
-        <div style="text-align: center; margin-top: 100px; color: white;">
-            <h2>Produit introuvable.</h2>
-            <a asp-page="/Products/Index" class="btn-primary" style="margin-top: 20px;">Retour à la collection</a>
-        </div>
+    <div style="text-align: center; margin-top: 100px; color: white;">
+        <h2>Produit introuvable.</h2>
+        <a asp-page="/Products/Index" class="btn-primary" style="margin-top: 20px;">Retour à la collection</a>
+    </div>
 }

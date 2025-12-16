@@ -8,6 +8,8 @@ public class ProductService
 {
     private readonly DataverseService _dataverse;
 
+    private const int ProductStructureFamily = 2;
+
     public ProductService(DataverseService dataverse)
     {
         _dataverse = dataverse;
@@ -23,14 +25,44 @@ public class ProductService
             ColumnSet = new ColumnSet(
                 "productid",
                 "name",
-                "price",
                 "entityimage"
             )
         };
 
+        query.Criteria.AddCondition("productstructure", ConditionOperator.NotEqual, ProductStructureFamily);
+
         var result = client.RetrieveMultiple(query);
 
-        return result.Entities.Select(MapProduct).ToList();
+        var products = result.Entities.Select(MapProduct).ToList();
+        ApplyPricesFromPriceListItems(products);
+        return products.Where(p => p.Price > 0).ToList();
+    }
+
+    public List<Product> GetFamilies()
+    {
+        var client = _dataverse.GetClient();
+
+        var query = new QueryExpression("product")
+        {
+            ColumnSet = new ColumnSet(
+                "productid",
+                "name"
+            )
+        };
+
+        query.Criteria.AddCondition("productstructure", ConditionOperator.Equal, ProductStructureFamily);
+        query.Orders.Add(new OrderExpression("name", OrderType.Ascending));
+
+        var result = client.RetrieveMultiple(query);
+
+        return result.Entities
+            .Select(e => new Product
+            {
+                Id = e.Id,
+                Name = e.GetAttributeValue<string>("name") ?? string.Empty,
+                Price = 0,
+            })
+            .ToList();
     }
     // ---------------------------------------------------------
     // 2. NOUVELLE MÉTHODE (Uniquement pour l'Accueil)
@@ -42,17 +74,26 @@ public class ProductService
         var query = new QueryExpression("product")
         {
             // On récupère aussi la DESCRIPTION ici
-            ColumnSet = new ColumnSet("productid", "name", "price", "description", "entityimage"),
+            ColumnSet = new ColumnSet("productid", "name", "description", "entityimage"),
 
             // On limite le nombre de résultats (ex: 2)
             TopCount = count,
 
-            // On trie par prix décroissant (du plus cher au moins cher)
-            Orders = { new OrderExpression("price", OrderType.Descending) }
+            // On triera en mémoire une fois les prix récupérés via productpricelevel
         };
 
+        query.Criteria.AddCondition("productstructure", ConditionOperator.NotEqual, ProductStructureFamily);
+
         var result = client.RetrieveMultiple(query);
-        return result.Entities.Select(MapProduct).ToList();
+
+        var products = result.Entities.Select(MapProduct).ToList();
+        ApplyPricesFromPriceListItems(products);
+
+        return products
+            .Where(p => p.Price > 0)
+            .OrderByDescending(p => p.Price)
+            .Take(count)
+            .ToList();
     }
 
     // 🔹 DÉTAIL D’UN PRODUIT
@@ -66,13 +107,19 @@ public class ProductService
             new ColumnSet(
                 "productid",
                 "name",
-                "price",
                 "description",
                 "entityimage"
             )
         );
 
-        return entity != null ? MapProduct(entity) : null;
+        if (entity == null)
+        {
+            return null;
+        }
+
+        var product = MapProduct(entity);
+        product.Price = GetPriceForProduct(product.Id);
+        return product;
     }
 
     // 🔹 Mapping centralisé
@@ -85,53 +132,114 @@ public class ProductService
             Id = e.Id,
             Name = e.GetAttributeValue<string>("name") ?? "",
             Description = e.GetAttributeValue<string>("description"),
-            Price = e.GetAttributeValue<Money>("price")?.Value ?? 0,
+            Price = 0,
             ImageBase64 = imageBytes != null
                 ? $"data:image/png;base64,{Convert.ToBase64String(imageBytes)}"
                 : null
         };
     }
 
-    public List<Product> GetFiltered(string search, string sortOrder, int? category)
+    public List<Product> GetFiltered(string search, string sortOrder, Guid? familyId)
     {
         var client = _dataverse.GetClient();
         var query = new QueryExpression("product");
 
-        query.ColumnSet = new ColumnSet("productid", "name", "price", "entityimage");
+        query.ColumnSet = new ColumnSet("productid", "name", "entityimage");
 
-        // 1. FILTRE OBLIGATOIRE : PRIX STRICTEMENT POSITIF (> 0)
-        query.Criteria.AddCondition("price", ConditionOperator.GreaterThan, 0);
+        query.Criteria.AddCondition("productstructure", ConditionOperator.NotEqual, ProductStructureFamily);
 
-        // 2. FILTRE RECHERCHE (Par nom)
+        // 1. FILTRE RECHERCHE (Par nom)
         if (!string.IsNullOrEmpty(search))
         {
             query.Criteria.AddCondition("name", ConditionOperator.Like, $"%{search}%");
         }
 
-        // 3. FILTRE CATÉGORIE (Structure Produit)
-        // On vérifie si une catégorie a été sélectionnée (donc non null)
-        if (category.HasValue)
+        // 2. FILTRE FAMILLE (produit parent)
+        if (familyId.HasValue)
         {
-            query.Criteria.AddCondition("productstructure", ConditionOperator.Equal, category.Value);
+            query.Criteria.AddCondition("parentproductid", ConditionOperator.Equal, familyId.Value);
         }
 
-        // 4. TRI
-        switch (sortOrder)
+        // 3. TRI
+        var result = client.RetrieveMultiple(query);
+
+        var products = result.Entities.Select(MapProduct).ToList();
+        ApplyPricesFromPriceListItems(products);
+        products = products.Where(p => p.Price > 0).ToList();
+
+        return sortOrder switch
         {
-            case "price_desc":
-                query.Orders.Add(new OrderExpression("price", OrderType.Descending));
-                break;
-            case "price_asc":
-                query.Orders.Add(new OrderExpression("price", OrderType.Ascending));
-                break;
-            case "name_asc":
-            default:
-                query.Orders.Add(new OrderExpression("name", OrderType.Ascending));
-                break;
-        }
+            "price_desc" => products.OrderByDescending(p => p.Price).ToList(),
+            "price_asc" => products.OrderBy(p => p.Price).ToList(),
+            _ => products.OrderBy(p => p.Name).ToList(),
+        };
+    }
+
+    private decimal GetPriceForProduct(Guid productId)
+    {
+        var client = _dataverse.GetClient();
+
+        var query = new QueryExpression("productpricelevel")
+        {
+            ColumnSet = new ColumnSet("amount", "productid", "createdon"),
+            TopCount = 1,
+            Orders = { new OrderExpression("createdon", OrderType.Descending) },
+        };
+
+        query.Criteria.AddCondition("productid", ConditionOperator.Equal, productId);
 
         var result = client.RetrieveMultiple(query);
-        return result.Entities.Select(MapProduct).ToList();
+        var entity = result.Entities.FirstOrDefault();
+
+        return entity?.GetAttributeValue<Money>("amount")?.Value ?? 0m;
+    }
+
+    private void ApplyPricesFromPriceListItems(List<Product> products)
+    {
+        if (products.Count == 0)
+        {
+            return;
+        }
+
+        var client = _dataverse.GetClient();
+        var productIds = products.Select(p => p.Id).Distinct().ToArray();
+        var productIdValues = productIds.Cast<object>().ToArray();
+
+        var query = new QueryExpression("productpricelevel")
+        {
+            ColumnSet = new ColumnSet("amount", "productid", "createdon"),
+            Orders = { new OrderExpression("createdon", OrderType.Descending) },
+        };
+
+        query.Criteria.AddCondition("productid", ConditionOperator.In, productIdValues);
+
+        var result = client.RetrieveMultiple(query);
+        var pricesByProductId = new Dictionary<Guid, decimal>();
+
+        foreach (var entity in result.Entities)
+        {
+            var productRef = entity.GetAttributeValue<EntityReference>("productid");
+            if (productRef == null)
+            {
+                continue;
+            }
+
+            if (pricesByProductId.ContainsKey(productRef.Id))
+            {
+                continue;
+            }
+
+            var amount = entity.GetAttributeValue<Money>("amount")?.Value ?? 0m;
+            pricesByProductId[productRef.Id] = amount;
+        }
+
+        foreach (var product in products)
+        {
+            if (pricesByProductId.TryGetValue(product.Id, out var amount))
+            {
+                product.Price = amount;
+            }
+        }
     }
 
 }

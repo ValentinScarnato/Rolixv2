@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Rolix.Web.Models;
 using Rolix.Web.Services;
@@ -16,20 +16,21 @@ namespace Rolix.Web.Pages.Products
 
         public List<Product> Products { get; set; } = new();
 
-        [BindProperty(SupportsGet = true)]
-        public string SearchString { get; set; }
+        public List<Product> Families { get; set; } = new();
 
         [BindProperty(SupportsGet = true)]
-        public string SortOrder { get; set; }
+        public string? SearchString { get; set; }
 
-        // NOUVEAU : On récupère l'ID de la catégorie (peut être null si "Tout")
         [BindProperty(SupportsGet = true)]
-        public int? Category { get; set; }
+        public string? SortOrder { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public Guid? FamilyId { get; set; }
 
         public void OnGet()
         {
-            // On passe les 3 paramètres au service
-            Products = _productService.GetFiltered(SearchString, SortOrder, Category);
+            Families = _productService.GetFamilies();
+            Products = _productService.GetFiltered(SearchString ?? string.Empty, SortOrder ?? "name_asc", FamilyId);
         }
     }
 }

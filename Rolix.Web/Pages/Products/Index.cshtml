@@ -29,11 +29,12 @@
             <div class="vertical-separator"></div>
 
             <div class="filter-group">
-                <select name="Category" onchange="this.form.submit()" class="glass-select-clean">
+                <select name="FamilyId" onchange="this.form.submit()" class="glass-select-clean">
                     <option value="">Toutes les collections</option>
-                    <option value="1" selected="@(Model.Category == 1)">Homme</option>
-                    <option value="2" selected="@(Model.Category == 2)">Femme</option>
-                    <option value="3" selected="@(Model.Category == 3)">Enfant</option>
+                    @foreach (var family in Model.Families)
+                    {
+                        <option value="@family.Id" selected="@(Model.FamilyId == family.Id)">@family.Name</option>
+                    }
                 </select>
             </div>
 
