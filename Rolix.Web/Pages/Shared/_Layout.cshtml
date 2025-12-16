@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+@using Microsoft.AspNetCore.Http
+@using Rolix.Web.Models
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
@@ -25,7 +27,14 @@
                 <a asp-page="/Products/Index">Collection</a>
                 <a asp-page="/About">Maison</a>
                 <a asp-page="/Contact">Contact</a>
-                <a asp-page="/Account/Index" class="nav-cta">Mon Compte</a>
+
+                @{
+                    var contactName = Context.Session.GetString(SessionKeys.ContactName);
+                }
+
+                <a asp-page="/Account/Index" class="nav-cta">
+                    @(string.IsNullOrEmpty(contactName) ? "Mon Compte" : $"Bonjour, {contactName}")
+                </a>
             </nav>
         </div>
     </header>
