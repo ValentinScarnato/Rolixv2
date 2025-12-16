@@ -376,144 +376,421 @@ section.features-section {
 }
 
 /* =========================
-   7. PAGE DÉTAILS PRODUIT (CORRIGÉE & OPTIMISÉE)
+   7. PAGE DÉTAILS PRODUIT
 ========================= */
-/* 1. Le conteneur qui centre tout */
-.product-details-container {
-    max-width: 1100px;
-    margin: 80px auto;
-    padding: 0 20px;
+.product-page-shell {
+    max-width: 1200px;
+    margin: 70px auto;
+    padding: 0 20px 40px;
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Espace entre le bouton retour et la carte */
+    gap: 30px;
 }
 
-/* 2. Wrapper pour aligner le bouton retour à gauche, hors de la carte */
+.alert {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font-weight: 600;
+}
+
+.alert-success {
+    border-color: rgba(52, 211, 153, 0.5);
+    background: rgba(52, 211, 153, 0.15);
+    color: #d7ffed;
+}
+
 .navigation-wrapper {
     display: flex;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
 }
 
-/* 3. Nouveau Style Bouton "Retour" (Or & Glass) */
 .btn-back-catalog {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    /* Espacement : On le décolle de l'image du bas */
-    margin-bottom: 30px;
-    /* On enlève la marge du haut qui servait avant */
-    margin-top: 0;
-    padding: 10px 25px; /* Un peu plus fin pour être élégant au dessus de l'image */
-    background: rgba(212, 175, 55, 0.1);
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(212, 175, 55, 0.12);
     border: 1px solid var(--accent-gold);
+    border-radius: 999px;
     color: var(--accent-gold);
-    border-radius: 50px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 0.8rem; /* Un poil plus discret */
+    font-weight: 700;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    backdrop-filter: blur(4px);
-    /* Important : pour qu'il ne s'étire pas sur toute la largeur */
-    align-self: flex-start;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
 }
 
-    .btn-back-catalog:hover {
-        background: var(--accent-gold);
-        color: var(--bg-main);
-        transform: translateX(-5px);
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-    }
+.btn-back-catalog:hover {
+    background: var(--accent-gold);
+    color: var(--bg-main);
+    transform: translateX(-4px);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
+}
 
-/* 4. La Carte en mode Grille (Image | Texte) */
-.product-details-card {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 50% / 50% */
-    gap: 60px;
+.breadcrumb-chip {
+    display: inline-flex;
     align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.breadcrumb-chip .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.product-hero-card {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px);
     border-radius: var(--radius-xl);
-    padding: 60px;
+    padding: 40px;
     box-shadow: var(--glass-shadow);
 }
 
-/* 5. Colonne Image */
-/* --- Modif : Colonne Image qui contient maintenant le bouton --- */
-.product-image-wrapper {
-    display: flex;
-    flex-direction: column; /* Empile le bouton au-dessus de l'image */
-    align-items: flex-start; /* Aligne le bouton à gauche (début de la zone rouge) */
-    justify-content: center;
-    height: 100%;
+.product-visual-panel {
+    position: relative;
+    background: radial-gradient(circle at 25% 20%, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
+                linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 30px;
+    min-height: 420px;
+    overflow: hidden;
 }
 
-
-
-/* --- Modif : L'image doit prendre tout l'espace restant --- */
-.product-details-image {
+.product-visual {
     width: 100%;
-    max-width: 450px;
-    height: auto;
+    height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
-    /* On s'assure qu'elle est bien centrée horizontalement si elle est plus petite */
-    align-self: center;
+    filter: drop-shadow(0 30px 60px rgba(0,0,0,0.55));
+    position: relative;
+    z-index: 2;
 }
 
-/* 6. Colonne Infos */
-.product-details-info h1 {
-    font-size: 3rem;
-    line-height: 1.1;
-    margin-bottom: 10px;
-    font-family: 'Playfair Display', serif;
+.product-visual.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    opacity: 0.7;
 }
 
-.product-details-info .price {
-    font-size: 2rem; /* Prix plus gros */
+.product-flag {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 8px 14px;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid var(--accent-gold);
+    border-radius: 999px;
     color: var(--accent-gold);
-    margin-bottom: 30px;
-    display: block;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    z-index: 3;
 }
 
-.product-details-info .description {
-    font-size: 1.05rem;
-    line-height: 1.8;
+.visual-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 40%, rgba(255,255,255,0.06), transparent 45%);
+    z-index: 1;
+}
+
+.product-summary-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.product-lead {
     color: var(--text-secondary);
-    margin: 30px 0;
-    text-align: justify;
-    border-left: 2px solid var(--accent); /* Petite ligne déco sur le côté */
-    padding-left: 20px;
+    line-height: 1.7;
 }
 
-/* Responsive Tablette/Mobile */
-@media (max-width: 900px) {
-    .product-details-card {
-        grid-template-columns: 1fr; /* Une colonne */
-        padding: 30px;
-        text-align: center;
-    }
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 16px;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+}
 
-    .product-details-info .description {
-        text-align: center;
-        border-left: none;
-        padding-left: 0;
+.price-label {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem;
+}
+
+.price-value {
+    font-size: 2.2rem;
+    color: var(--accent-gold);
+    margin: 5px 0;
+}
+
+.price-meta {
+    display: grid;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.spec-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.spec-label {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.85rem;
+}
+
+.spec-value {
+    font-weight: 700;
+    color: #fff;
+}
+
+.quote-form.expanded {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trust-signals {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 6px;
+    color: var(--text-secondary);
+}
+
+.product-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.detail-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 24px;
+    display: grid;
+    gap: 12px;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+    color: var(--text-secondary);
+}
+
+.feature-list li::before {
+    content: "•";
+    margin-right: 8px;
+    color: var(--accent-gold);
+}
+
+.spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.service-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+}
+
+@media (max-width: 1000px) {
+    .product-hero-card {
+        grid-template-columns: 1fr;
     }
 
     .navigation-wrapper {
-        justify-content: center;
-    }
-
-    .product-details-image {
-        max-height: 300px;
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
 
 /* =========================
-   8. FOOTER
+   8. MON COMPTE / CONNEXION
+========================= */
+.account-wrapper {
+    max-width: 1200px;
+    margin: 70px auto;
+    padding: 0 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.account-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.account-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.account-badges span {
+    padding: 8px 12px;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.account-toast {
+    margin: 0;
+}
+
+.account-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.account-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    box-shadow: var(--glass-shadow);
+}
+
+.account-card.soft {
+    background: rgba(255,255,255,0.04);
+}
+
+.account-header h2 {
+    margin: 6px 0;
+}
+
+.stacked-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 6px;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.validation-summary {
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 99, 132, 0.08);
+    border: 1px solid rgba(255, 99, 132, 0.35);
+}
+
+.account-help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.account-help-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: var(--glass-shadow);
+}
+
+.account-help-card ul {
+    padding-left: 18px;
+    margin: 10px 0;
+    color: var(--text-secondary);
+}
+
+.account-help-card.secondary {
+    background: rgba(255,255,255,0.02);
+}
+
+.account-connected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.04);
+}
+
+.connected-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.fine-print {
+    font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+    .account-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .account-connected {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* =========================
+   9. FOOTER
 ========================= */
 .rolix-footer {
     background: rgba(30, 24, 50, 0.9);
@@ -1537,6 +1814,30 @@ section.features-section {
     padding: 20px;
     border-radius: 15px;
     border: 1px solid rgba(255,255,255,0.05);
+}
+
+.action-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.quote-form {
+    margin: 0;
+}
+
+.trust-signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.accent-check {
+    color: var(--accent-gold);
+    margin-right: 6px;
 }
 
 .spec-item {

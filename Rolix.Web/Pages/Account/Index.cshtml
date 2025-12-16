@@ -1,7 +1,131 @@
-﻿@page
+@page
+@model Rolix.Web.Pages.Account.IndexModel
+@using Rolix.Web.Models
 @{
     ViewData["Title"] = "Mon compte";
 }
 
-<h1>Mon compte</h1>
-<p>Accédez à vos garanties, commandes et demandes SAV.</p>
+<div class="account-wrapper">
+    <div class="account-top">
+        <div>
+            <p class="eyebrow">Mon compte</p>
+            <h1>Connexion & inscription</h1>
+            <p class="lead">Identifiez-vous ou créez un accès pour demander un devis et suivre vos échanges.</p>
+        </div>
+        <div class="account-badges">
+            <span>Synchronisé Dataverse</span>
+            <span>Accès sécurisé</span>
+            <span>Suivi des demandes</span>
+        </div>
+    </div>
+
+    @if (TempData["Success"] is string success)
+    {
+        <div class="alert alert-success account-toast">@success</div>
+    }
+
+    @if (Model.IsAuthenticated)
+    {
+        <div class="account-connected">
+            <div class="connected-identity">
+                <p class="eyebrow">Connecté</p>
+                <h3>@Model.ContactName</h3>
+                <p class="muted">@Model.ContactEmail</p>
+            </div>
+            <div class="connected-actions">
+                <a asp-page="/Products/Index" class="btn-primary-large">Découvrir la collection</a>
+                <form method="post" asp-page-handler="Logout">
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                    <button type="submit" class="btn-secondary-glass">Se déconnecter</button>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="account-form-grid">
+            <div class="account-card">
+                <div class="account-header">
+                    <p class="eyebrow">Déjà client</p>
+                    <h2>Connexion</h2>
+                    <p class="muted">Utilisez vos informations enregistrées dans Dataverse.</p>
+                </div>
+
+                <form method="post" class="stacked-form" asp-page-handler="Login">
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+
+                    <div class="form-group">
+                        <label asp-for="Input.Email">Email professionnel</label>
+                        <input asp-for="Input.Email" class="glass-input-clean" placeholder="prenom.nom@exemple.com" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.LastName">Nom de famille</label>
+                        <input asp-for="Input.LastName" class="glass-input-clean" placeholder="Nom tel que stocké dans Dataverse" />
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+                    <button type="submit" class="btn-primary-large">Connexion sécurisée</button>
+                </form>
+            </div>
+
+            <div class="account-card soft">
+                <div class="account-header">
+                    <p class="eyebrow">Nouveau client</p>
+                    <h2>Créer un compte</h2>
+                    <p class="muted">Ajoutez vos informations pour pouvoir demander des devis personnalisés.</p>
+                </div>
+
+                <form method="post" class="stacked-form" asp-page-handler="Register">
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+
+                    <div class="two-columns">
+                        <div class="form-group">
+                            <label asp-for="Register.FirstName">Prénom</label>
+                            <input asp-for="Register.FirstName" class="glass-input-clean" />
+                            <span asp-validation-for="Register.FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Register.LastName">Nom</label>
+                            <input asp-for="Register.LastName" class="glass-input-clean" />
+                            <span asp-validation-for="Register.LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Register.Email">Email professionnel</label>
+                        <input asp-for="Register.Email" class="glass-input-clean" placeholder="prenom.nom@exemple.com" />
+                        <span asp-validation-for="Register.Email" class="text-danger"></span>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+                    <button type="submit" class="btn-secondary-glass">Créer mon compte</button>
+                    <p class="muted fine-print">Les informations sont stockées dans Dataverse (table Contact).</p>
+                </form>
+            </div>
+        </div>
+    }
+
+    <div class="account-help-grid">
+        <div class="account-help-card">
+            <h3>Pourquoi se connecter ?</h3>
+            <ul>
+                <li>Déposer une demande de devis sur chaque produit.</li>
+                <li>Retrouver vos coordonnées automatiquement dans les formulaires.</li>
+                <li>Synchronisation directe avec vos données Dataverse (table Contact).</li>
+            </ul>
+        </div>
+        <div class="account-help-card secondary">
+            <h3>Assistance</h3>
+            <p>Si vous rencontrez un problème, contactez votre interlocuteur Rolix ou vérifiez votre email enregistré dans Dataverse.</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

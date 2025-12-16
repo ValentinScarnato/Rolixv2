@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model Rolix.Web.Pages.Products.DetailsModel
 @{
     ViewData["Title"] = Model.Product?.Name;
@@ -8,92 +8,144 @@
 
 @if (Model.Product != null)
 {
-        <div class="product-details-container">
+    <div class="product-page-shell">
+        <div class="navigation-wrapper">
+            <a asp-page="/Products/Index" class="btn-back-catalog">&larr; Retour au catalogue</a>
 
-            <div class="product-details-card fade-in-up">
+            <div class="breadcrumb-chip">
+                <span class="dot"></span>
+                Fiche détaillée
+            </div>
+        </div>
 
-                <div class="product-image-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; height: 100%; position: relative;">
+        @if (TempData["QuoteSuccess"] is string quoteMessage)
+        {
+            <div class="alert alert-success">@quoteMessage</div>
+        }
 
-                    <a asp-page="/Products/Index" class="btn-back-catalog" style="margin-bottom: 30px; align-self: flex-start;">
-                        &larr; Retour au catalogue
-                    </a>
-
-                    <div class="watch-glow"></div>
+        <div class="product-hero-card">
+            <div class="product-visual-panel">
+                <div class="product-flag">Montre de collection</div>
 
                 @if (!string.IsNullOrEmpty(Model.Product.ImageBase64))
                 {
-                            <img src="@Model.Product.ImageBase64" 
-                                 alt="@Model.Product.Name" 
-                                 class="product-details-image" 
-                                 style="align-self: center; margin-top: auto; margin-bottom: auto; z-index: 2;" />
+                    <img src="@Model.Product.ImageBase64" alt="@Model.Product.Name" class="product-visual" />
                 }
                 else
                 {
-                            <div class="product-details-image" style="display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); color: #fff; height: 400px; width: 100%; border-radius: 20px; align-self: center;">
-                                <span>Pas d'image</span>
-                            </div>
+                    <div class="product-visual placeholder">
+                        <span>Pas d'image disponible</span>
+                    </div>
                 }
+
+                <div class="visual-overlay"></div>
+            </div>
+
+            <div class="product-summary-panel">
+                <p class="eyebrow">Référence interne</p>
+                <h1 class="product-title">@Model.Product.Name</h1>
+
+                <p class="product-lead">
+                    @(string.IsNullOrWhiteSpace(Model.Product.Description)
+                        ? "Un modèle emblématique prêt à rejoindre votre collection."
+                        : Model.Product.Description)
+                </p>
+
+                <div class="price-row">
+                    <div>
+                        <p class="price-label">Prix public indicatif</p>
+                        <p class="price-value">@Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))</p>
+                        <p class="tax-label">TVA incluse</p>
+                    </div>
+                    <div class="price-meta">
+                        <span>Disponibilité sur demande</span>
+                        <span>Entretien atelier certifié</span>
+                    </div>
                 </div>
 
-                <div class="product-details-info">
-
-                    <div class="fade-in-up delay-200">
-                        <span class="product-reference">Réf. 126233 (Exemple)</span>
-                        <h1 class="product-title">@Model.Product.Name</h1>
-
-                        <div class="price-wrapper">
-                            <span class="price">
-                            @Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))
-                            </span>
-                            <span class="tax-label">TVA incluse</span>
-                        </div>
+                <div class="spec-row">
+                    <div>
+                        <p class="spec-label">Mouvement</p>
+                        <p class="spec-value">Perpetual automatique</p>
                     </div>
-
-                    <div class="separator-line fade-in-up delay-400"></div>
-
-                @if (!string.IsNullOrEmpty(Model.Product.Description))
-                {
-                            <div class="description-block fade-in-up delay-400">
-                                <h3>L'Esprit du Modèle</h3>
-                                <p class="description">
-                            @Model.Product.Description
-                                </p>
-                            </div>
-                }
-
-                    <div class="specs-grid fade-in-up delay-600">
-                        <div class="spec-item">
-                            <span class="spec-label">Diamètre</span>
-                            <span class="spec-value">41 mm</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Matériau</span>
-                            <span class="spec-value">Oystersteel</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Mouvement</span>
-                            <span class="spec-value">Perpetual</span>
-                        </div>
-                        <div class="spec-item">
-                            <span class="spec-label">Étanchéité</span>
-                            <span class="spec-value">100 mètres</span>
-                        </div>
+                    <div>
+                        <p class="spec-label">Étanchéité</p>
+                        <p class="spec-value">100 m</p>
                     </div>
-
-                    <div class="action-block fade-in-up delay-600" style="margin-top: 40px;">
-                        <button class="btn-primary-large">
-                            Demander un devis
-                        </button>
-
-                        <div class="trust-signals">
-                            <span><span style="color:var(--accent-gold);">✔</span> Garantie 5 ans</span>
-                            <span><span style="color:var(--accent-gold);">✔</span> Livraison Sécurisée</span>
-                        </div>
+                    <div>
+                        <p class="spec-label">Boîtier</p>
+                        <p class="spec-value">Acier Oystersteel</p>
                     </div>
+                </div>
 
+                <form method="post" asp-page-handler="Quote" class="quote-form expanded">
+                    <input type="hidden" name="id" value="@Model.Product.Id" />
+                    <button type="submit" class="btn-primary-large">Demander un devis</button>
+                    <p class="muted fine-print">Nos conseillers confirment la disponibilité et vous recontactent sous 24h.</p>
+                </form>
+
+                <div class="trust-signals">
+                    <span><span class="accent-check">✔</span> Garantie internationale 5 ans</span>
+                    <span><span class="accent-check">✔</span> Livraison sécurisée et assurée</span>
+                    <span><span class="accent-check">✔</span> Atelier d'entretien certifié</span>
                 </div>
             </div>
         </div>
+
+        <div class="product-detail-grid">
+            <section class="detail-card">
+                <div class="card-header">
+                    <p class="eyebrow">Présentation</p>
+                    <h3>Ce qui rend ce modèle unique</h3>
+                </div>
+                <p class="muted">
+                    @(string.IsNullOrWhiteSpace(Model.Product.Description)
+                        ? "Une silhouette équilibrée, des finitions brossées et polies, et un calibre maison conçu pour durer."
+                        : Model.Product.Description)
+                </p>
+                <ul class="feature-list">
+                    <li>Réserve de marche optimisée pour un port quotidien.</li>
+                    <li>Bracelet ergonomique et boucle déployante sécurisée.</li>
+                    <li>Contrôle qualité en 7 points avant expédition.</li>
+                </ul>
+            </section>
+
+            <section class="detail-card">
+                <div class="card-header">
+                    <p class="eyebrow">Spécifications clés</p>
+                    <h3>Pour les passionnés</h3>
+                </div>
+                <div class="spec-grid">
+                    <div>
+                        <p class="spec-label">Diamètre</p>
+                        <p class="spec-value">41 mm</p>
+                    </div>
+                    <div>
+                        <p class="spec-label">Verre</p>
+                        <p class="spec-value">Saphir antireflet</p>
+                    </div>
+                    <div>
+                        <p class="spec-label">Index</p>
+                        <p class="spec-value">Appliqués luminescents</p>
+                    </div>
+                    <div>
+                        <p class="spec-label">Étanchéité</p>
+                        <p class="spec-value">100 mètres</p>
+                    </div>
+                </div>
+                <div class="service-strip">
+                    <div>
+                        <p class="spec-label">Services</p>
+                        <p class="spec-value">Essayage privé & livraison sécurisée</p>
+                    </div>
+                    <div>
+                        <p class="spec-label">Support</p>
+                        <p class="spec-value">Conciergerie dédiée 6j/7</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
 }
 else
 {
