@@ -1,0 +1,130 @@
+/* =========================
+
+   2. HEADER (Effet Verre)
+
+========================= */
+
+.rolix-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    /* LE SECRET : Un violet moyen, semi-transparent et lumineux */
+    /* C'est beaucoup plus clair que le fond noir du site, mais bien violet */
+
+    background: rgba(86, 61, 124, 0.85);
+    /* On ajoute un léger dégradé pour faire "bijou" */
+
+    background: linear-gradient(90deg, rgba(86, 64, 124, 0.9) 0%, rgba(128, 98, 172, 0.9) 100%);
+    /* Flou important pour lisser le tout */
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* Bordure lumineuse en bas */
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.rolix-header-inner {
+    max-width: 1400px;
+    margin: auto;
+    padding: 15px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+
+.rolix-logo img {
+    height: 75px;
+    width: auto;
+    /* On ajoute une lueur blanche derrière le logo pour qu'il se détache parfaitement du violet */
+
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+    transition: transform 0.3s;
+}
+
+
+
+    .rolix-logo img:hover {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
+    }
+
+
+
+/* --- LIENS DE NAVIGATION --- */
+
+.rolix-nav a {
+    margin-left: 32px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    /* Blanc pur, c'est ce qui marche le mieux sur ce violet moyen */
+
+    color: #FFFFFF !important;
+    position: relative;
+    padding-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+
+
+    /* Soulignement doré */
+
+    .rolix-nav a:not(.nav-cta)::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent-gold);
+        transition: width 0.3s;
+    }
+
+
+
+    .rolix-nav a:not(.nav-cta):hover {
+        color: var(--accent-gold) !important;
+        text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+    }
+
+
+
+        .rolix-nav a:not(.nav-cta):hover::after {
+            width: 100%;
+        }
+
+
+
+/* --- BOUTON "MON COMPTE" --- */
+
+/* Pour qu'il se voit bien sur le violet clair, on le met en FONCÉ */
+
+.nav-cta {
+    padding: 10px 28px !important;
+    /* Fond très foncé (le fond du site) pour créer un "trou" de contraste */
+
+    background: #251e3e !important;
+    /* Texte Or */
+
+    color: var(--accent-gold) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+
+
+    .nav-cta:hover {
+        /* Au survol : Il devient tout Or */
+
+        background: var(--accent-gold) !important;
+        color: #251e3e !important;
+        transform: translateY(-2px);
+    }

@@ -1,240 +1,212 @@
 @page
 @model Rolix.Web.Pages.Account.IndexModel
 @{
-    ViewData["Title"] = "Mon compte";
+    ViewData["Title"] = "Espace Client";
 }
 
 <div class="account-wrapper">
-    <div class="account-top">
+
+    <div class="account-top fade-in-up">
         <div>
-            <p class="eyebrow">Mon compte</p>
-            <h1>Votre espace client</h1>
-            <p class="lead">Consultez vos devis et gérez vos informations.</p>
+            <p class="eyebrow" style="color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Espace Privé</p>
+            <h1>Mon Compte</h1>
+            <p class="lead" style="color: var(--text-secondary);">Gérez vos informations et suivez vos demandes d'exception.</p>
         </div>
         <div class="account-badges">
             @if (Model.IsAuthenticated)
             {
-                <span>Client</span>
-                @if (!string.IsNullOrWhiteSpace(Model.ContactUsername))
-                {
-                    <span>@Model.ContactUsername</span>
-                }
+                    <span>Membre Privilège</span>
             }
             else
             {
-                <span>Accès sécurisé</span>
+                    <span>Accès Sécurisé</span>
             }
         </div>
     </div>
 
     @if (TempData["Success"] is string success)
     {
-        <div class="alert alert-success account-toast">@success</div>
+            <div class="alert alert-success fade-in-up" style="margin-bottom: 30px;">@success</div>
     }
 
     <div class="account-form-grid">
-        <div class="account-card">
-            <div class="account-header">
-                <h2>@(Model.IsAuthenticated ? "Informations" : "Connexion")</h2>
-                <p class="lead">@(Model.IsAuthenticated ? "Mettez à jour vos informations Dataverse." : "Connectez-vous pour demander un devis.")</p>
-            </div>
+
+        <div class="account-card fade-in-up delay-200">
 
             @if (Model.IsAuthenticated)
             {
-                <div class="account-connected">
-                    <div>
-                        <p class="eyebrow">Connecté</p>
-                        <h3 style="margin: 6px 0;">@Model.ContactName</h3>
-                        <p class="muted" style="margin: 0;">@Model.ContactEmail</p>
-                    </div>
-                    <div class="connected-actions">
+                    <div class="account-connected">
+                        <div>
+                            <p style="font-size: 0.8rem; text-transform: uppercase; color: rgba(255,255,255,0.5);">Identifié en tant que</p>
+                            <h3>@Model.ContactName</h3>
+                            <p style="color: #fff;">@Model.ContactEmail</p>
+                        </div>
                         <form method="post" asp-page-handler="Logout">
                             <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
-                            <button type="submit" class="btn-secondary-glass">Se déconnecter</button>
+                            <button type="submit" class="btn-secondary-glass" style="padding: 10px 20px; font-size: 0.8rem;">Déconnexion</button>
                         </form>
                     </div>
-                </div>
 
-                <form method="post" class="stacked-form" asp-page-handler="Update">
-                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                    <div class="account-header">
+                        <h2>Mes Informations</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Mettez à jour vos coordonnées Dataverse.</p>
+                    </div>
 
-                    <div class="two-columns">
+                    <form method="post" class="stacked-form" asp-page-handler="Update">
+                        <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+
                         <div class="form-group">
-                            <label asp-for="Update.FullName">Nom complet</label>
+                            <label asp-for="Update.FullName">Nom Complet</label>
                             <input asp-for="Update.FullName" class="glass-input-clean" />
                             <span asp-validation-for="Update.FullName" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="Update.Email">Email</label>
+                            <label asp-for="Update.Email">Email Professionnel</label>
                             <input asp-for="Update.Email" class="glass-input-clean" />
                             <span asp-validation-for="Update.Email" class="text-danger"></span>
                         </div>
-                    </div>
 
-                    @if (!ViewContext.ModelState.IsValid)
-                    {
-                        <div class="text-danger validation-summary">
-                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                            {
-                                <div>@error.ErrorMessage</div>
-                            }
-                        </div>
-                    }
-
-                    <button type="submit" class="btn-primary-large">Enregistrer</button>
-                </form>
+                        <button type="submit" class="btn-primary-large">Enregistrer les modifications</button>
+                    </form>
             }
             else
             {
-                <form method="post" class="stacked-form" asp-page-handler="Login">
-                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
-
-                    <div class="form-group">
-                        <label asp-for="Input.Username">Nom d'utilisateur</label>
-                        <input asp-for="Input.Username" class="glass-input-clean" placeholder="mon.username" />
-                        <span asp-validation-for="Input.Username" class="text-danger"></span>
+                    <div class="account-header">
+                        <h2>Connexion</h2>
+                        <p style="color: var(--text-secondary);">Accédez à votre historique et vos devis.</p>
                     </div>
 
-                    <div class="form-group">
-                        <label asp-for="Input.Password">Mot de passe</label>
-                        <input asp-for="Input.Password" class="glass-input-clean" type="password" />
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    </div>
+                    <form method="post" class="stacked-form" asp-page-handler="Login">
+                        <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
 
-                    @if (!ViewContext.ModelState.IsValid)
+                        <div class="form-group">
+                            <label asp-for="Input.Username">Identifiant (Nom d'utilisateur)</label>
+                            <input asp-for="Input.Username" class="glass-input-clean" placeholder="ex: j.doe" />
+                            <span asp-validation-for="Input.Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Input.Password">Mot de passe</label>
+                            <input asp-for="Input.Password" class="glass-input-clean" type="password" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                    @if (!ViewData.ModelState.IsValid)
                     {
-                        <div class="text-danger validation-summary">
+                                <div class="text-danger" style="background: rgba(255,0,0,0.1); padding: 10px; border-radius: 8px;">
                             @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                             {
-                                <div>@error.ErrorMessage</div>
+                                            <div>@error.ErrorMessage</div>
                             }
-                        </div>
+                                </div>
                     }
 
-                    <button type="submit" class="btn-primary-large">Connexion</button>
-                </form>
+                        <button type="submit" class="btn-primary-large">Se connecter</button>
+                    </form>
             }
         </div>
 
-        <div class="account-card soft">
-            <div class="account-header">
-                <h2>@(Model.IsAuthenticated ? "Vos devis" : "Créer un compte")</h2>
-                <p class="lead">@(Model.IsAuthenticated ? "Suivez vos devis en cours." : "Créez un compte pour demander des devis.")</p>
-            </div>
+        <div class="account-card soft fade-in-up delay-400">
 
             @if (Model.IsAuthenticated)
             {
-                <div class="account-help-grid">
-                    <div class="account-help-card secondary">
-                        <h3>Devis en attente</h3>
-                        @if (Model.PendingQuotes.Count == 0)
+                    <div class="account-help-grid">
+
+                        <div class="account-help-card">
+                            <h3>Devis en cours</h3>
+                        @if (Model.PendingQuotes != null && Model.PendingQuotes.Any())
                         {
-                            <p class="muted">Aucun devis en attente.</p>
-                        }
-                        else
-                        {
-                            <ul>
+                                    <ul>
                                 @foreach (var quote in Model.PendingQuotes)
                                 {
-                                    <li>
-                                        <strong>@quote.Name</strong>
-                                        @if (!string.IsNullOrWhiteSpace(quote.ProductName))
-                                        {
-                                            <div class="muted fine-print">@quote.ProductName</div>
-                                        }
-                                        <div class="muted fine-print">@quote.Amount.ToString("C2") @if (quote.CreatedOn.HasValue){<span>— @quote.CreatedOn.Value.ToString("dd/MM/yyyy")</span>}</div>
-                                    </li>
+                                                <li>
+                                                    <strong>@quote.Name</strong>
+                                                    <div class="fine-print">@quote.ProductName</div>
+                                                    <div class="fine-print" style="color: var(--accent-gold);">
+                                            @quote.Amount.ToString("C0") • @(quote.CreatedOn?.ToString("dd/MM/yyyy") ?? "-")
+                                                    </div>
+                                                </li>
                                 }
-                            </ul>
-                        }
-                    </div>
-
-                    <div class="account-help-card secondary">
-                        <h3>Historique</h3>
-                        @if (Model.QuoteRequests.Count == 0)
-                        {
-                            <p class="muted">Aucune demande de devis.</p>
+                                    </ul>
                         }
                         else
                         {
-                            <ul>
-                                @foreach (var quote in Model.QuoteRequests)
-                                {
-                                    <li>
-                                        <strong>@quote.Subject</strong>
-                                        @if (quote.CreatedOn.HasValue)
-                                        {
-                                            <span class="muted"> — @quote.CreatedOn.Value.ToString("dd/MM/yyyy")</span>
-                                        }
-                                    </li>
-                                }
-                            </ul>
+                                    <p style="color: rgba(255,255,255,0.4); font-style: italic;">Aucun devis en attente pour le moment.</p>
+                                    <a asp-page="/Products/Index" style="display:block; margin-top:10px; color:var(--accent-gold); text-decoration:underline;">Parcourir la collection</a>
                         }
+                        </div>
+
+                        <div class="account-help-card">
+                            <h3>Historique</h3>
+                        @if (Model.QuoteRequests != null && Model.QuoteRequests.Any())
+                        {
+                                    <ul>
+                                @foreach (var req in Model.QuoteRequests)
+                                {
+                                                <li>
+                                                    <strong>@req.Subject</strong>
+                                                    <div class="fine-print">Le @(req.CreatedOn?.ToString("dd/MM/yyyy") ?? "-")</div>
+                                                </li>
+                                }
+                                    </ul>
+                        }
+                        else
+                        {
+                                    <p style="color: rgba(255,255,255,0.4);">Aucune demande passée.</p>
+                        }
+                        </div>
                     </div>
-                </div>
             }
             else
             {
-                <form method="post" class="stacked-form" asp-page-handler="Register">
-                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
-
-                    <div class="form-group">
-                        <label asp-for="Register.FullName">Nom complet</label>
-                        <input asp-for="Register.FullName" class="glass-input-clean" placeholder="Prénom Nom" />
-                        <span asp-validation-for="Register.FullName" class="text-danger"></span>
+                    <div class="account-header">
+                        <h2>Nouveau Client ?</h2>
+                        <p style="color: var(--text-secondary);">Créez un compte pour bénéficier de nos services exclusifs.</p>
                     </div>
 
-                    <div class="form-group">
-                        <label asp-for="Register.Email">Email</label>
-                        <input asp-for="Register.Email" class="glass-input-clean" placeholder="prenom.nom@exemple.com" />
-                        <span asp-validation-for="Register.Email" class="text-danger"></span>
-                    </div>
+                    <form method="post" class="stacked-form" asp-page-handler="Register">
+                        <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
 
-                    <div class="form-group">
-                        <label asp-for="Register.Username">Nom d'utilisateur</label>
-                        <input asp-for="Register.Username" class="glass-input-clean" placeholder="mon.username" />
-                        <span asp-validation-for="Register.Username" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Register.Password">Mot de passe</label>
-                        <input asp-for="Register.Password" class="glass-input-clean" type="password" />
-                        <span asp-validation-for="Register.Password" class="text-danger"></span>
-                    </div>
-
-                    @if (!ViewContext.ModelState.IsValid)
-                    {
-                        <div class="text-danger validation-summary">
-                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                            {
-                                <div>@error.ErrorMessage</div>
-                            }
+                        <div class="form-group">
+                            <label asp-for="Register.FullName">Nom Complet</label>
+                            <input asp-for="Register.FullName" class="glass-input-clean" placeholder="Prénom Nom" />
+                            <span asp-validation-for="Register.FullName" class="text-danger"></span>
                         </div>
-                    }
 
-                    <button type="submit" class="btn-primary-large">Créer mon compte</button>
-                </form>
+                        <div class="form-group">
+                            <label asp-for="Register.Email">Email</label>
+                            <input asp-for="Register.Email" class="glass-input-clean" placeholder="email@exemple.com" />
+                            <span asp-validation-for="Register.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Register.Username">Identifiant souhaité</label>
+                            <input asp-for="Register.Username" class="glass-input-clean" />
+                            <span asp-validation-for="Register.Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Register.Password">Mot de passe</label>
+                            <input asp-for="Register.Password" class="glass-input-clean" type="password" />
+                            <span asp-validation-for="Register.Password" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn-secondary-glass" style="width: 100%; justify-content: center;">Créer mon compte</button>
+                    </form>
             }
         </div>
-    </div>
 
-    <div class="account-help-grid">
-        <div class="account-help-card">
-            <h3>Pourquoi se connecter ?</h3>
-            <ul>
-                <li>Demander un devis personnalisé sur chaque modèle.</li>
-                <li>Retrouver vos échanges et demandes précédentes.</li>
-                <li>Synchronisation directe avec vos informations Dataverse (table Contact).</li>
-            </ul>
-        </div>
-        <div class="account-help-card secondary">
-            <h3>Assistance</h3>
-            <p>Si vous ne parvenez pas à vous connecter, contactez votre interlocuteur Rolix ou vérifiez vos informations dans Dataverse.</p>
-        </div>
     </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            // Petite animation d'entrée
+            document.addEventListener("DOMContentLoaded", function() {
+                const elements = document.querySelectorAll('.fade-in-up');
+                elements.forEach(el => el.style.animationPlayState = 'running');
+            });
+        </script>
 }

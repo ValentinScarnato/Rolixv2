@@ -1,11 +1,12 @@
 ﻿@page
+@model Rolix.Web.Pages.IndexModel
 @{
     ViewData["Title"] = "Rolix - L'Excellence Horlogère";
 }
 
 <div class="maison-hero">
     <div class="maison-hero-overlay"></div>
-    <img src="https://images.unsplash.com/photo-1600003014637-ff82a275e191?q=80&w=1011&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+    <img src="https://images.unsplash.com/photo-1600003014637-ff82a275e191?q=80&w=1011&auto=format&fit=crop" 
          alt="Mécanisme Rolix" class="maison-hero-bg parallax-img">
 
     <div class="maison-hero-content">
@@ -16,7 +17,6 @@
             <a asp-page="/Products/Index" class="btn-primary">
                 Voir la collection
             </a>
-
             <a asp-page="/About" class="btn-secondary-glass">
                 Notre histoire
             </a>
@@ -73,21 +73,59 @@
         </div>
     </section>
 
-    <section class="gallery-section reveal-on-scroll">
-        <h2>L'Excellence en Images</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item item-1">
-                <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=1480&auto=format&fit=crop" alt="Montre Luxe 1">
-            </div>
-            <div class="gallery-item item-2">
-                <img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?q=80&w=1374&auto=format&fit=crop" alt="Montre Luxe 2">
-            </div>
-            <div class="gallery-item item-3">
-                <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1399&auto=format&fit=crop" alt="Montre Luxe 3">
-            </div>
-        </div>
+    <section class="gallery-section reveal-on-scroll" style="margin-top: 100px;">
+        <span class="since-badge" style="margin-bottom: 20px; display:inline-block;">Haute Horlogerie</span>
+        <h2 style="margin-bottom: 60px;">Collection Prestige</h2>
 
-        <div class="marquee-wrapper reveal-on-scroll">
+        @if (Model.TopProducts.Count > 0)
+        {
+                <div class="products-grid">
+                @foreach (var product in Model.TopProducts)
+                {
+                            <a asp-page="/Products/Details" asp-route-id="@product.Id" class="product-card-link">
+                                <div class="product-card-luxury">
+                                    <div class="card-badge">Exception</div>
+
+                                    <div class="card-image-wrapper">
+                                @if (!string.IsNullOrEmpty(product.ImageBase64))
+                                {
+                                                <img src="@product.ImageBase64" alt="@product.Name" />
+                                }
+                                else
+                                {
+                                                <div style="color:rgba(255,255,255,0.3)">Image indisponible</div>
+                                }
+                                    </div>
+
+                                    <div class="card-info">
+                                        <h3>@product.Name</h3>
+                                        <div class="card-separator"></div>
+
+                                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6); margin-bottom: 15px; height: 3.6em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                    @(product.Description ?? "L'élégance intemporelle.")
+                                        </p>
+
+                                        <p class="price">@product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))</p>
+                                        <span class="view-btn">Explorer ce modèle</span>
+                                    </div>
+                                </div>
+                            </a>
+                }
+                </div>
+        }
+        else
+        {
+                <div class="empty-state">
+                    <p>La collection est momentanément indisponible.</p>
+                </div>
+        }
+
+        <div style="text-align: center; margin-top: 60px;">
+            <a asp-page="/Products/Index" class="btn-secondary-glass">Découvrir toute la collection</a>
+        </div>
+    </section>
+
+    <div class="marquee-wrapper reveal-on-scroll">
         <div class="marquee-container">
             <div class="marquee-content">
                 <span class="marquee-item">PRECISION</span>
@@ -105,41 +143,22 @@
                 <span class="marquee-item">HERITAGE</span>
                 <span class="separator">✦</span>
                 <span class="marquee-item">SWISS MADE</span>
-                <span class="separator">✦</span>
-                 <span class="marquee-item">PRECISION</span>
-                <span class="separator">✦</span>
-                <span class="marquee-item">ELEGANCE</span>
-                <span class="separator">✦</span>
-                <span class="marquee-item">HERITAGE</span>
-                <span class="separator">✦</span>
-                <span class="marquee-item">SWISS MADE</span>
-                <span class="separator">✦</span>
             </div>
         </div>
     </div>
-    </section>
-
 
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.15
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
 
-        const elements = document.querySelectorAll('.reveal-on-scroll');
-        elements.forEach(el => observer.observe(el));
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
     });
 </script>

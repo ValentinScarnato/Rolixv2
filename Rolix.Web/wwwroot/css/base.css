@@ -1,0 +1,85 @@
+/* =========================
+
+   1. VARIABLES & RESET (Thème "Royal Amethyst")
+
+========================= */
+
+:root {
+    /* Fond : Dégradé plus riche et plus lumineux */
+
+    --bg-main: #251e3e;
+    --bg-gradient: linear-gradient(135deg, #322653 0%, #251e3e 100%);
+    /* Couleurs de texte */
+
+    --text-primary: #FFFFFF;
+    --text-secondary: #E0D4F5; /* Lavande clair */
+    /* Accent & Luxe */
+
+    --accent: #B794F4; /* Violet lumineux */
+
+    --accent-gold: #D4AF37; /* Touche d'or pour le luxe */
+    /* Glassmorphism (Effet Verre) */
+
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+    /* Espacements & Formes */
+
+    --section-spacing: 100px;
+    --radius-lg: 24px;
+    --radius-xl: 40px;
+}
+
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+
+
+    body.layout-root {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-main); /* Fallback */
+
+        background-image: var(--bg-gradient);
+        background-attachment: fixed; /* Le fond reste fixe quand on scroll */
+
+        color: var(--text-secondary);
+        font-family: 'Inter', sans-serif;
+        line-height: 1.7;
+        overflow-x: hidden; /* Évite le scroll horizontal à cause des décorations */
+    }
+
+
+
+.rolix-main {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+
+
+h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-top: 0;
+}

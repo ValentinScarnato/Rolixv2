@@ -73,13 +73,11 @@ public class ProductService
 
         var query = new QueryExpression("product")
         {
-            // On récupère aussi la DESCRIPTION ici
+            // On récupère nom, description et image
             ColumnSet = new ColumnSet("productid", "name", "description", "entityimage"),
 
-            // On limite le nombre de résultats (ex: 2)
-            TopCount = count,
-
-            // On triera en mémoire une fois les prix récupérés via productpricelevel
+            // IMPORTANT : On retire TopCount ici pour scanner tout le catalogue
+            // sinon on rate les montres chères si elles ne sont pas dans les premières lignes
         };
 
         query.Criteria.AddCondition("productstructure", ConditionOperator.NotEqual, ProductStructureFamily);
@@ -87,8 +85,11 @@ public class ProductService
         var result = client.RetrieveMultiple(query);
 
         var products = result.Entities.Select(MapProduct).ToList();
+
+        // 1. On récupère les prix
         ApplyPricesFromPriceListItems(products);
 
+        // 2. On trie par prix décroissant ET on prend les 'count' premiers
         return products
             .Where(p => p.Price > 0)
             .OrderByDescending(p => p.Price)
