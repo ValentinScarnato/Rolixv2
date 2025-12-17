@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Rolix.Web.Models;
 using Rolix.Web.Services;
+using System.Linq; // Assure-toi d'avoir ça
 
 namespace Rolix.Web.Pages.Products
 {
@@ -15,7 +16,6 @@ namespace Rolix.Web.Pages.Products
         }
 
         public List<Product> Products { get; set; } = new();
-
         public List<Product> Families { get; set; } = new();
 
         [BindProperty(SupportsGet = true)]
@@ -30,7 +30,14 @@ namespace Rolix.Web.Pages.Products
         public void OnGet()
         {
             Families = _productService.GetFamilies();
-            Products = _productService.GetFiltered(SearchString ?? string.Empty, SortOrder ?? "name_asc", FamilyId);
+
+            // 1. On récupère tout
+            var allProducts = _productService.GetFiltered(SearchString ?? string.Empty, SortOrder ?? "name_asc", FamilyId);
+
+            // 2. On FILTRE : On garde ceux qui ont une image non nulle et non vide
+            Products = allProducts
+                        .Where(p => !string.IsNullOrEmpty(p.ImageBase64))
+                        .ToList();
         }
     }
 }
