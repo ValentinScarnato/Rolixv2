@@ -12,6 +12,11 @@ public class DetailsModel : PageModel
 
     public Product? Product { get; set; }
 
+    public bool HasPendingQuote { get; private set; }
+
+    [BindProperty]
+    public string? Comment { get; set; }
+
     public DetailsModel(ProductService productService, QuoteService quoteService)
     {
         _productService = productService;
@@ -24,6 +29,19 @@ public class DetailsModel : PageModel
 
         if (Product == null)
             return NotFound();
+
+        var contactId = HttpContext.Session.GetString(SessionKeys.ContactId);
+        if (Guid.TryParse(contactId, out var contactGuid))
+        {
+            try
+            {
+                HasPendingQuote = _quoteService.HasPendingQuoteForProduct(contactGuid, Product.Id);
+            }
+            catch
+            {
+                HasPendingQuote = false;
+            }
+        }
 
         return Page();
     }
@@ -44,7 +62,16 @@ public class DetailsModel : PageModel
             return RedirectToPage("/Account/Index", new { returnUrl });
         }
 
-        var result = _quoteService.CreateQuote(Guid.Parse(contactId), Product);
+        QuoteCreationResult result;
+        try
+        {
+            result = _quoteService.CreateQuote(Guid.Parse(contactId), Product, Comment, contactEmail);
+        }
+        catch (Exception ex)
+        {
+            TempData["QuoteWarning"] = $"Impossible d'envoyer votre demande de devis pour le moment : {ex.Message}";
+            return RedirectToPage(new { id });
+        }
 
         if (result.QuoteId == Guid.Empty)
         {

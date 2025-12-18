@@ -124,7 +124,7 @@
                                                     <strong>@quote.Name</strong>
                                                     <div class="fine-print">@quote.ProductName</div>
                                                     <div class="fine-print" style="color: var(--accent-gold);">
-                                            @quote.Amount.ToString("C0") • @(quote.CreatedOn?.ToString("dd/MM/yyyy") ?? "-")
+                                            @quote.Amount.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-CH")) • @(quote.CreatedOn?.ToString("dd/MM/yyyy") ?? "-")
                                                     </div>
                                                 </li>
                                 }

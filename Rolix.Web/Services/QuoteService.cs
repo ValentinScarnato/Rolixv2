@@ -1,5 +1,6 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using System.Globalization;
 using Rolix.Web.Models;
 
 namespace Rolix.Web.Services;
@@ -13,14 +14,14 @@ public class QuoteService
         _dataverse = dataverse;
     }
 
-    public Guid CreateQuoteRequest(Guid contactId, Product product, string? contactEmail)
+    public Guid CreateQuoteRequest(Guid contactId, Product product, string? contactEmail, string? userComment = null)
     {
         var client = _dataverse.GetClient();
 
         var task = new Entity("task")
         {
             ["subject"] = $"Demande de devis - {product.Name}",
-            ["description"] = BuildDescription(product, contactEmail),
+            ["description"] = BuildDescription(product, contactEmail, userComment),
             ["scheduledend"] = DateTime.UtcNow.AddDays(2)
         };
 
@@ -29,7 +30,7 @@ public class QuoteService
         return client.Create(task);
     }
 
-    public QuoteCreationResult CreateQuote(Guid contactId, Product product)
+    public QuoteCreationResult CreateQuote(Guid contactId, Product product, string? userComment = null, string? contactEmail = null)
     {
         var client = _dataverse.GetClient();
 
@@ -40,8 +41,9 @@ public class QuoteService
 
         var quote = new Entity("quote")
         {
-            ["name"] = $"Devis - {product.Name} - {DateTime.UtcNow:yyyy-MM-dd HH:mm}",
+            ["name"] = $"Devis - {product.Name} - {DateTime.UtcNow.AddHours(1):yyyy-MM-dd HH:mm}",
             ["customerid"] = new EntityReference("contact", contactId),
+            ["description"] = BuildDescription(product, contactEmail, userComment),
         };
 
         var quoteId = client.Create(quote);
@@ -176,9 +178,9 @@ public class QuoteService
         }).ToList();
     }
 
-    private static string BuildDescription(Product product, string? contactEmail)
+    private static string BuildDescription(Product product, string? contactEmail, string? userComment)
     {
-        var details = $"Modèle : {product.Name}\nPrix catalogue : {product.Price:C2}\nIdentifiant : {product.Id}";
+        var details = $"Modèle : {product.Name}\nPrix catalogue : {product.Price.ToString("C2", CultureInfo.CreateSpecificCulture("fr-CH"))}\nIdentifiant : {product.Id}";
 
         if (!string.IsNullOrWhiteSpace(contactEmail))
         {
@@ -188,6 +190,11 @@ public class QuoteService
         if (!string.IsNullOrWhiteSpace(product.Description))
         {
             details += $"\nDescription Dataverse : {product.Description}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(userComment))
+        {
+            details += $"\nCommentaire client : {userComment}";
         }
 
         return details;

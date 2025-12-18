@@ -15,6 +15,11 @@
             <div class="alert alert-success" style="margin-bottom: 20px;">@quoteMessage</div>
         }
 
+        @if (TempData["QuoteWarning"] is string quoteWarning)
+        {
+            <div class="alert alert-warning" style="margin-bottom: 20px;">@quoteWarning</div>
+        }
+
         <div class="product-details-card fade-in-up">
 
             <div class="product-image-wrapper">
@@ -66,7 +71,7 @@
 
                     <div class="price-wrapper">
                         <span class="price">
-                            @Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-FR"))
+                            @Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-CH"))
                         </span>
                         <span class="tax-label">TVA incluse</span>
                     </div>
@@ -90,9 +95,23 @@
                 <div class="action-block fade-in-up delay-600">
                     <form method="post" asp-page-handler="Quote" class="quote-form">
                         <input type="hidden" name="id" value="@Model.Product.Id" />
-                        <button type="submit" class="btn-primary-large">
-                            Demander un devis
-                        </button>
+                        <input type="hidden" name="comment" id="quote-comment" value="@Model.Comment" />
+
+                        @if (Model.HasPendingQuote)
+                        {
+                            <button type="button" class="btn-primary-large" disabled>
+                                Demande envoyée
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn-primary-large" id="open-quote-modal">
+                                Demander un devis
+                            </button>
+                            <button type="submit" class="btn-primary-large" id="submit-quote" style="display:none;">
+                                Demander un devis
+                            </button>
+                        }
                     </form>
 
                     <div class="trust-signals">
@@ -104,6 +123,57 @@
             </div>
         </div>
     </div>
+
+    <div id="quote-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999;">
+        <div style="max-width: 560px; margin: 10vh auto; background: rgba(20,20,20,0.95); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 18px;">
+            <h3 style="margin-top: 0;">Commentaire (optionnel)</h3>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <textarea id="quote-modal-comment" class="glass-input-clean" rows="4" placeholder="Ajoutez un commentaire pour votre demande...">@Model.Comment</textarea>
+            </div>
+            <div style="display:flex; gap: 10px; justify-content:flex-end;">
+                <button type="button" class="btn-secondary-glass" id="close-quote-modal">Annuler</button>
+                <button type="button" class="btn-primary-large" id="confirm-quote">Envoyer la demande</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const openBtn = document.getElementById('open-quote-modal');
+            const modal = document.getElementById('quote-modal');
+            const closeBtn = document.getElementById('close-quote-modal');
+            const confirmBtn = document.getElementById('confirm-quote');
+            const modalComment = document.getElementById('quote-modal-comment');
+            const hiddenComment = document.getElementById('quote-comment');
+            const submitBtn = document.getElementById('submit-quote');
+
+            if (!openBtn || !modal || !closeBtn || !confirmBtn || !modalComment || !hiddenComment || !submitBtn) {
+                return;
+            }
+
+            function openModal() {
+                modal.style.display = 'block';
+                modalComment.focus();
+            }
+
+            function closeModal() {
+                modal.style.display = 'none';
+            }
+
+            openBtn.addEventListener('click', openModal);
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeModal();
+            });
+
+            confirmBtn.addEventListener('click', function() {
+                hiddenComment.value = modalComment.value || '';
+                openBtn.disabled = true;
+                confirmBtn.disabled = true;
+                submitBtn.click();
+            });
+        })();
+    </script>
 }
 else
 {
