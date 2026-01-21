@@ -4,77 +4,123 @@
     ViewData["Title"] = "Espace Client";
 }
 
-<div class="account-wrapper">
+<link rel="stylesheet" href="~/css/account.css" />
 
-    <div class="account-top fade-in-up">
-        <div>
-            <p class="eyebrow" style="color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Espace Privé</p>
-            <h1>Mon Compte</h1>
-            <p class="lead" style="color: var(--text-secondary);">Gérez vos informations et suivez vos demandes d'exception.</p>
+@if (Model.IsAuthenticated)
+{
+    <div class="account-container">
+        <div class="account-sidebar">
+            <div class="account-avatar">
+                <div class="avatar-circle">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+            </div>
+
+            <nav class="account-menu">
+                <a href="/Account" class="menu-item active">
+                    <i class="bi bi-person"></i>
+                    <span>Mon Profil</span>
+                </a>
+                <a href="/Invoices" class="menu-item">
+                    <i class="bi bi-receipt"></i>
+                    <span>Mes Factures</span>
+                </a>
+                <a href="/Sav" class="menu-item">
+                    <i class="bi bi-tools"></i>
+                    <span>Retours SAV</span>
+                </a>
+                <a href="/Account/Logout" class="menu-item logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </nav>
         </div>
-        <div class="account-badges">
-            @if (Model.IsAuthenticated)
+
+        <div class="account-content">
+            <div class="content-header">
+                <h1>Mon Profil</h1>
+                <p class="subtitle">Gérez vos informations personnelles</p>
+            </div>
+
+            @if (TempData["Success"] is string success)
             {
-                    <span>Membre Privilège</span>
+                <div class="alert alert-success">@success</div>
             }
-            else
-            {
-                    <span>Accès Sécurisé</span>
-            }
+
+            <div class="profile-info-card">
+                <div class="profile-header">
+                    <div>
+                        <p class="profile-label">Identifié en tant que</p>
+                        <h2>@Model.ContactName</h2>
+                        <p class="profile-email">@Model.ContactEmail</p>
+                    </div>
+                    <span class="member-badge">Membre Privilège</span>
+                </div>
+            </div>
+
+            <div class="profile-form-card">
+                <h3>Mes Informations</h3>
+                <p class="form-description">Mettez à jour vos coordonnées</p>
+
+                <form method="post" class="stacked-form" asp-page-handler="Update">
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+
+                    <div class="form-group">
+                        <label asp-for="Update.FullName">Nom Complet</label>
+                        <input asp-for="Update.FullName" class="glass-input-clean" />
+                        <span asp-validation-for="Update.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Update.Email">Email Professionnel</label>
+                        <input asp-for="Update.Email" class="glass-input-clean" />
+                        <span asp-validation-for="Update.Email" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn-primary-large">
+                        <i class="bi bi-check-circle"></i> Enregistrer les modifications
+                    </button>
+                </form>
+            </div>
+
+            <div class="quick-links-grid">
+                <div class="quick-link-card">
+                    <i class="bi bi-receipt" style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
+                    <h3>Factures</h3>
+                    <p>Consultez et téléchargez vos factures</p>
+                    <a asp-page="/Invoices/Index" class="btn-link">Voir mes factures →</a>
+                </div>
+
+                <div class="quick-link-card">
+                    <i class="bi bi-tools" style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
+                    <h3>Retours SAV</h3>
+                    <p>Gérez vos demandes de retour sous garantie</p>
+                    <a asp-page="/Sav/Index" class="btn-link">Mes retours SAV →</a>
+                </div>
+            </div>
         </div>
     </div>
+}
+else
+{
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-header">
+                <p class="eyebrow">Espace Privé</p>
+                <h1>Mon Compte</h1>
+                <p class="lead">Accédez à votre espace client</p>
+            </div>
 
-    @if (TempData["Success"] is string success)
-    {
-            <div class="alert alert-success fade-in-up" style="margin-bottom: 30px;">@success</div>
-    }
-
-    <div class="account-form-grid">
-
-        <div class="account-card fade-in-up delay-200">
-
-            @if (Model.IsAuthenticated)
+            @if (TempData["Success"] is string success)
             {
-                    <div class="account-connected">
-                        <div>
-                            <p style="font-size: 0.8rem; text-transform: uppercase; color: rgba(255,255,255,0.5);">Identifié en tant que</p>
-                            <h3>@Model.ContactName</h3>
-                            <p style="color: #fff;">@Model.ContactEmail</p>
-                        </div>
-                        <form method="post" asp-page-handler="Logout">
-                            <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
-                            <button type="submit" class="btn-secondary-glass" style="padding: 10px 20px; font-size: 0.8rem;">Déconnexion</button>
-                        </form>
-                    </div>
-
-                    <div class="account-header">
-                        <h2>Mes Informations</h2>
-                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Mettez à jour vos coordonnées Dataverse.</p>
-                    </div>
-
-                    <form method="post" class="stacked-form" asp-page-handler="Update">
-                        <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
-
-                        <div class="form-group">
-                            <label asp-for="Update.FullName">Nom Complet</label>
-                            <input asp-for="Update.FullName" class="glass-input-clean" />
-                            <span asp-validation-for="Update.FullName" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label asp-for="Update.Email">Email Professionnel</label>
-                            <input asp-for="Update.Email" class="glass-input-clean" />
-                            <span asp-validation-for="Update.Email" class="text-danger"></span>
-                        </div>
-
-                        <button type="submit" class="btn-primary-large">Enregistrer les modifications</button>
-                    </form>
+                <div class="alert alert-success">@success</div>
             }
-            else
-            {
-                    <div class="account-header">
+
+            <div class="login-grid">
+                <div class="login-card">
+                    <div class="card-header">
                         <h2>Connexion</h2>
-                        <p style="color: var(--text-secondary);">Accédez à votre historique et vos devis.</p>
+                        <p>Accédez à votre compte</p>
                     </div>
 
                     <form method="post" class="stacked-form" asp-page-handler="Login">
@@ -92,82 +138,24 @@
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
 
-                    @if (!ViewData.ModelState.IsValid)
-                    {
-                                <div class="text-danger" style="background: rgba(255,0,0,0.1); padding: 10px; border-radius: 8px;">
-                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                            {
-                                            <div>@error.ErrorMessage</div>
-                            }
-                                </div>
-                    }
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <div>@error.ErrorMessage</div>
+                                }
+                            </div>
+                        }
 
                         <button type="submit" class="btn-primary-large">Se connecter</button>
                     </form>
-            }
-        </div>
+                </div>
 
-        <div class="account-card soft fade-in-up delay-400">
-
-            @if (Model.IsAuthenticated)
-            {
-                    <div class="account-help-grid">
-
-                        <div class="account-help-card">
-                            <h3>Devis en cours</h3>
-                        @if (Model.PendingQuotes != null && Model.PendingQuotes.Any())
-                        {
-                                    <ul>
-                                @foreach (var quote in Model.PendingQuotes)
-                                {
-                                                <li>
-                                                    <strong>@quote.Name</strong>
-                                                    <div class="fine-print">@quote.ProductName</div>
-                                                    <div class="fine-print" style="color: var(--accent-gold);">
-                                            @quote.Amount.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-CH")) • @(quote.CreatedOn?.ToString("dd/MM/yyyy") ?? "-")
-                                                    </div>
-                                                </li>
-                                }
-                                    </ul>
-                        }
-                        else
-                        {
-                                    <p style="color: rgba(255,255,255,0.4); font-style: italic;">Aucun devis en attente pour le moment.</p>
-                                    <a asp-page="/Products/Index" style="display:block; margin-top:10px; color:var(--accent-gold); text-decoration:underline;">Parcourir la collection</a>
-                        }
-                        </div>
-
-                        <div class="account-help-card">
-                            <h3>Factures</h3>
-                            <a asp-page="/Invoices/Index" class="btn-primary-large" style="margin-bottom:6px; padding:6px 14px; font-size:0.8rem;">Voir mes factures</a>
-                        </div>
-
-                        <div class="account-help-card">
-                            <h3>Historique</h3>
-                        @if (Model.QuoteRequests != null && Model.QuoteRequests.Any())
-                        {
-                                    <ul>
-                                @foreach (var req in Model.QuoteRequests)
-                                {
-                                                <li>
-                                                    <strong>@req.Subject</strong>
-                                                    <div class="fine-print">Le @(req.CreatedOn?.ToString("dd/MM/yyyy") ?? "-")</div>
-                                                </li>
-                                }
-                                    </ul>
-                        }
-                        else
-                        {
-                                    <p style="color: rgba(255,255,255,0.4);">Aucune demande passée.</p>
-                        }
-                        </div>
-                    </div>
-            }
-            else
-            {
-                    <div class="account-header">
+                <div class="login-card">
+                    <div class="card-header">
                         <h2>Nouveau Client ?</h2>
-                        <p style="color: var(--text-secondary);">Créez un compte pour bénéficier de nos services exclusifs.</p>
+                        <p>Créez un compte pour bénéficier de nos services exclusifs</p>
                     </div>
 
                     <form method="post" class="stacked-form" asp-page-handler="Register">
@@ -199,19 +187,214 @@
 
                         <button type="submit" class="btn-secondary-glass" style="width: 100%; justify-content: center;">Créer mon compte</button>
                     </form>
-            }
+                </div>
+            </div>
         </div>
-
     </div>
-</div>
+}
+
+<style>
+/* Styles pour la page connectée */
+.profile-info-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.profile-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.5rem;
+    letter-spacing: 1.5px;
+}
+
+.profile-header h2 {
+    font-size: 2rem;
+    color: #fff;
+    margin: 0 0 0.5rem 0;
+    font-family: 'Playfair Display', serif;
+}
+
+.profile-email {
+    color: var(--accent-gold);
+    font-size: 1.1rem;
+}
+
+.member-badge {
+    padding: 8px 16px;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    border-radius: 50px;
+    background: rgba(212, 175, 55, 0.05);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+.profile-form-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-form-card h3 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.form-description {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1.5rem;
+}
+
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.quick-link-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.quick-link-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-5px);
+}
+
+.quick-link-card h3 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.quick-link-card p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.btn-link {
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* Styles pour la page non connectée */
+.login-wrapper {
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 20px;
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 40px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.eyebrow {
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.login-header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    font-family: 'Playfair Display', serif;
+}
+
+.lead {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
+}
+
+.login-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 30px;
+}
+
+.card-header {
+    margin-bottom: 25px;
+}
+
+.card-header h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.card-header p {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+}
+
+.alert-danger {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    color: #f44336;
+}
+
+
+@@media (max-width: 900px) {
+    .login-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
 @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-        <script>
-            // Petite animation d'entrée
-            document.addEventListener("DOMContentLoaded", function() {
-                const elements = document.querySelectorAll('.fade-in-up');
-                elements.forEach(el => el.style.animationPlayState = 'running');
-            });
-        </script>
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -1,0 +1,218 @@
+@page
+@model Rolix.Web.Pages.Sav.IndexModel
+@{
+    ViewData["Title"] = "Retours SAV";
+}
+
+<link rel="stylesheet" href="~/css/account.css" />
+
+<div class="account-container">
+    <div class="account-sidebar">
+        <div class="account-avatar">
+            <div class="avatar-circle">
+                <i class="bi bi-person-fill"></i>
+            </div>
+        </div>
+
+        <nav class="account-menu">
+            <a href="/Account" class="menu-item">
+                <i class="bi bi-person"></i>
+                <span>Mon Profil</span>
+            </a>
+            <a href="/Invoices" class="menu-item">
+                <i class="bi bi-receipt"></i>
+                <span>Mes Factures</span>
+            </a>
+            <a href="/Sav" class="menu-item active">
+                <i class="bi bi-tools"></i>
+                <span>Retours SAV</span>
+            </a>
+            <a href="/Account/Logout" class="menu-item logout">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Déconnexion</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="account-content">
+        <div class="content-header">
+            <h1>Retours SAV</h1>
+            <p class="subtitle">Gérez vos demandes de retour sous garantie</p>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <div class="sav-section">
+            <h2>Créer une demande SAV</h2>
+            <p class="section-description">Sélectionnez le produit concerné et décrivez le problème rencontré.</p>
+
+            <form method="post" class="sav-form">
+                <div class="form-group">
+                    <label asp-for="ProductId">Produit concerné</label>
+                    <select asp-for="ProductId" class="glass-input-clean" required>
+                        <option value="">-- Sélectionnez un produit --</option>
+                        @foreach (var product in Model.Products)
+                        {
+                            <option value="@product.Id">@product.Name - @product.Price.ToString("C", new System.Globalization.CultureInfo("fr-CH"))</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ProductId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Diagnostic">Diagnostic / Description du problème</label>
+                    <textarea asp-for="Diagnostic" class="glass-input-clean" rows="5" placeholder="Décrivez le problème rencontré avec votre montre..." required></textarea>
+                    <span asp-validation-for="Diagnostic" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn-primary-large">
+                    <i class="bi bi-send"></i> Créer la demande SAV
+                </button>
+            </form>
+        </div>
+
+        @if (Model.SavRequests.Any())
+        {
+            <div class="sav-section">
+                <h2>Mes demandes SAV</h2>
+                <div class="sav-list">
+                    @foreach (var request in Model.SavRequests)
+                    {
+                        <div class="sav-card">
+                            <div class="sav-header">
+                                <span class="sav-ticket">@request.TicketNumber</span>
+                                <span class="sav-date">@request.ReceptionDate.ToString("dd/MM/yyyy")</span>
+                            </div>
+                            <div class="sav-body">
+                                <h3>@request.WatchModel</h3>
+                                @if (!string.IsNullOrEmpty(request.Diagnostic))
+                                {
+                                    <p class="sav-diagnostic">@request.Diagnostic</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+.sav-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.sav-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.section-description {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1.5rem;
+}
+
+.sav-form {
+    max-width: 600px;
+}
+
+.sav-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.sav-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.sav-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.sav-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.sav-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.sav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sav-ticket {
+    font-weight: 600;
+    color: #4CAF50;
+    font-size: 1.1rem;
+}
+
+.sav-date {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+}
+
+.sav-body h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.sav-diagnostic {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+}
+
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+}
+
+.alert-danger {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    color: #f44336;
+}
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

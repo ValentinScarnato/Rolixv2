@@ -1,4 +1,5 @@
 ﻿@page
+@model Rolix.Web.Pages.ContactModel
 @{
     ViewData["Title"] = "Service Clientèle";
 }
@@ -87,37 +88,57 @@
                     <div class="contact-divider"></div>
                 </div>
 
-                <form class="luxury-form">
+                @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                {
+                    <div class="alert alert-success" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                        @Model.SuccessMessage
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-error" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                        @Model.ErrorMessage
+                    </div>
+                }
+
+                <form class="luxury-form" method="post">
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Prénom</label>
-                            <input type="text" class="glass-input-clean" placeholder="Votre prénom">
+                            <label asp-for="FirstName">Prénom</label>
+                            <input asp-for="FirstName" type="text" class="glass-input-clean" placeholder="Votre prénom">
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label>Nom</label>
-                            <input type="text" class="glass-input-clean" placeholder="Votre nom">
+                            <label asp-for="LastName">Nom</label>
+                            <input asp-for="LastName" type="text" class="glass-input-clean" placeholder="Votre nom">
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="glass-input-clean" placeholder="votre@email.com">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" type="email" class="glass-input-clean" placeholder="votre@email.com">
+                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label>Sujet</label>
-                        <select class="glass-select-clean">
-                            <option>Demande d'information</option>
-                            <option>Service Après-Vente</option>
-                            <option>Prendre Rendez-vous</option>
-                            <option>Presse & Partenariat</option>
+                        <label asp-for="Subject">Sujet</label>
+                        <select asp-for="Subject" class="glass-select-clean">
+                            <option value="">Sélectionnez un sujet</option>
+                            <option value="Demande d'information">Demande d'information</option>
+                            <option value="Service Après-Vente">Service Après-Vente</option>
+                            <option value="Prendre Rendez-vous">Prendre Rendez-vous</option>
+                            <option value="Presse & Partenariat">Presse & Partenariat</option>
                         </select>
+                        <span asp-validation-for="Subject" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label>Message</label>
-                        <textarea class="glass-input-clean" rows="5" placeholder="Comment pouvons-nous vous aider ?"></textarea>
+                        <label asp-for="Message">Message</label>
+                        <textarea asp-for="Message" class="glass-input-clean" rows="5" placeholder="Comment pouvons-nous vous aider ?"></textarea>
+                        <span asp-validation-for="Message" class="text-danger"></span>
                     </div>
 
                     <button type="submit" class="btn-primary-large">

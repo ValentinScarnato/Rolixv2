@@ -1,4 +1,8 @@
 using Rolix.Web.Services;
+using QuestPDF.Infrastructure;
+
+// Set QuestPDF License
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +22,8 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ContactService>();
 builder.Services.AddScoped<QuoteService>();
 builder.Services.AddScoped<InvoiceService>();
+builder.Services.AddScoped<LeadService>();
+builder.Services.AddScoped<SavService>();
 
 var app = builder.Build();
 

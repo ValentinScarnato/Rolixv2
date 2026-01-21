@@ -4,96 +4,173 @@
     ViewData["Title"] = "Mes factures";
 }
 
-<style>
-    .invoices-wrapper {
-        max-width: 900px;
-        margin: 40px auto;
-        background: rgba(10, 10, 10, 0.85);
-        border-radius: 16px;
-        padding: 24px 28px;
-        border: 1px solid rgba(255,255,255,0.06);
-    }
+<link rel="stylesheet" href="~/css/account.css" />
 
-    .invoices-wrapper h1 {
-        margin-top: 0;
-        margin-bottom: 18px;
-    }
+<div class="account-container">
+    <div class="account-sidebar">
+        <div class="account-avatar">
+            <div class="avatar-circle">
+                <i class="bi bi-person-fill"></i>
+            </div>
+        </div>
 
-    .invoices-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.9rem;
-    }
+        <nav class="account-menu">
+            <a href="/Account" class="menu-item">
+                <i class="bi bi-person"></i>
+                <span>Mon Profil</span>
+            </a>
+            <a href="/Invoices" class="menu-item active">
+                <i class="bi bi-receipt"></i>
+                <span>Mes Factures</span>
+            </a>
+            <a href="/Sav" class="menu-item">
+                <i class="bi bi-tools"></i>
+                <span>Retours SAV</span>
+            </a>
+            <a href="/Account/Logout" class="menu-item logout">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Déconnexion</span>
+            </a>
+        </nav>
+    </div>
 
-    .invoices-table thead {
-        border-bottom: 1px solid rgba(255,255,255,0.12);
-    }
+    <div class="account-content">
+        <div class="content-header">
+            <h1>Mes Factures</h1>
+            <p class="subtitle">Consultez et téléchargez vos factures</p>
+        </div>
 
-    .invoices-table th,
-    .invoices-table td {
-        padding: 10px 8px;
-        text-align: left;
-        vertical-align: middle;
-    }
-
-    .invoices-table tbody tr:nth-child(odd) {
-        background: rgba(255,255,255,0.02);
-    }
-
-    .invoice-download-link {
-        color: var(--accent-gold);
-        text-decoration: none;
-        font-size: 0.85rem;
-    }
-
-    .invoice-download-link:hover {
-        text-decoration: underline;
-    }
-
-    .invoice-empty {
-        color: rgba(255,255,255,0.6);
-        font-style: italic;
-    }
-</style>
-
-<div class="invoices-wrapper">
-    <h1>Mes factures</h1>
-
-    @if (Model.Invoices.Count == 0)
-    {
-        <p class="invoice-empty">Aucune facture trouvée pour le moment.</p>
-    }
-    else
-    {
-        <table class="invoices-table">
-        <thead>
-            <tr>
-                <th>Numéro</th>
-                <th>Date</th>
-                <th>Montant</th>
-                <th>Statut</th>
-                <th>Téléchargement</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var invoice in Model.Invoices)
+        @if (Model.Invoices.Count == 0)
         {
-            <tr>
-                <td>@invoice.Number</td>
-                <td>@invoice.Date?.ToString("dd/MM/yyyy")</td>
-                <td>@invoice.Amount.ToString("C2", System.Globalization.CultureInfo.CreateSpecificCulture("fr-CH"))</td>
-                <td>@invoice.Status</td>
-                <td>
-                    <a asp-page="/Invoices/Download"
-                        asp-route-id="@invoice.Id"
-                        target="_blank"
-                        class="invoice-download-link">
-                        Télécharger le PDF
-                    </a>
-                </td>
-            </tr>
+            <div class="empty-state">
+                <i class="bi bi-receipt" style="font-size: 3rem; color: rgba(255,255,255,0.3); margin-bottom: 1rem;"></i>
+                <p style="color: rgba(255,255,255,0.6); font-size: 1.1rem;">Aucune facture trouvée pour le moment.</p>
+            </div>
         }
-        </tbody>
-    </table>
-    }
+        else
+        {
+            <div class="invoices-table-wrapper">
+                <table class="invoices-table">
+                    <thead>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Date</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var invoice in Model.Invoices)
+                        {
+                            <tr>
+                                <td><strong>@invoice.Number</strong></td>
+                                <td>@invoice.Date?.ToString("dd/MM/yyyy")</td>
+                                <td class="amount">@invoice.Amount.ToString("C2", System.Globalization.CultureInfo.CreateSpecificCulture("fr-CH"))</td>
+                                <td>
+                                    <span class="status-badge">@invoice.Status</span>
+                                </td>
+                                <td>
+                                    <a asp-page="/Invoices/Download"
+                                       asp-route-id="@invoice.Id"
+                                       target="_blank"
+                                       class="btn-download">
+                                        <i class="bi bi-download"></i> Télécharger PDF
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </div>
+
+<style>
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.invoices-table-wrapper {
+    overflow-x: auto;
+}
+
+.invoices-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.invoices-table thead {
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.invoices-table th {
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.invoices-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.invoices-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.invoices-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.invoices-table .amount {
+    color: var(--accent-gold);
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+.btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--accent-gold);
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-download:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+}
+
+.btn-download i {
+    font-size: 1rem;
+}
+</style>
