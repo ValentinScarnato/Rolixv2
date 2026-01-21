@@ -39,12 +39,41 @@ public class QuoteService
             return new QuoteCreationResult(Guid.Empty, null, "Vous avez déjà un devis en attente pour ce produit.");
         }
 
+        // Recherche de la devise CHF dans Dataverse
+        EntityReference? chfCurrencyRef = null;
+        try
+        {
+            var currencyQuery = new QueryExpression("transactioncurrency")
+            {
+                ColumnSet = new ColumnSet("transactioncurrencyid"),
+                TopCount = 1,
+            };
+
+            currencyQuery.Criteria.AddCondition("isocurrencycode", ConditionOperator.Equal, "CHF");
+
+            var currencyResult = client.RetrieveMultiple(currencyQuery);
+            var chfCurrency = currencyResult.Entities.FirstOrDefault();
+            if (chfCurrency != null)
+            {
+                chfCurrencyRef = chfCurrency.ToEntityReference();
+            }
+        }
+        catch
+        {
+            // Si on ne trouve pas la devise CHF, on laisse Dataverse utiliser la devise par défaut
+        }
+
         var quote = new Entity("quote")
         {
             ["name"] = $"Devis - {product.Name} - {DateTime.UtcNow.AddHours(1):yyyy-MM-dd HH:mm}",
             ["customerid"] = new EntityReference("contact", contactId),
             ["description"] = BuildDescription(product, contactEmail, userComment),
         };
+
+        if (chfCurrencyRef != null)
+        {
+            quote["transactioncurrencyid"] = chfCurrencyRef;
+        }
 
         var quoteId = client.Create(quote);
 
@@ -75,6 +104,11 @@ public class QuoteService
                 ["priceperunit"] = new Money(product.Price),
                 ["ispriceoverridden"] = true,
             };
+
+            if (chfCurrencyRef != null)
+            {
+                quoteDetail["transactioncurrencyid"] = chfCurrencyRef;
+            }
 
             quoteDetailId = client.Create(quoteDetail);
         }

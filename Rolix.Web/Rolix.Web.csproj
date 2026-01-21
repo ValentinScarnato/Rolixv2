@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="4.1.1" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="4.1.1" />
     <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.10" />
+    <PackageReference Include="QuestPDF" Version="2025.12.3" />
   </ItemGroup>
 
   <ItemGroup>

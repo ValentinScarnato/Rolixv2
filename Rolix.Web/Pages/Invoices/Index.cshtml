@@ -1,0 +1,99 @@
+@page
+@model Rolix.Web.Pages.Invoices.IndexModel
+@{
+    ViewData["Title"] = "Mes factures";
+}
+
+<style>
+    .invoices-wrapper {
+        max-width: 900px;
+        margin: 40px auto;
+        background: rgba(10, 10, 10, 0.85);
+        border-radius: 16px;
+        padding: 24px 28px;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .invoices-wrapper h1 {
+        margin-top: 0;
+        margin-bottom: 18px;
+    }
+
+    .invoices-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    .invoices-table thead {
+        border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .invoices-table th,
+    .invoices-table td {
+        padding: 10px 8px;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .invoices-table tbody tr:nth-child(odd) {
+        background: rgba(255,255,255,0.02);
+    }
+
+    .invoice-download-link {
+        color: var(--accent-gold);
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+    .invoice-download-link:hover {
+        text-decoration: underline;
+    }
+
+    .invoice-empty {
+        color: rgba(255,255,255,0.6);
+        font-style: italic;
+    }
+</style>
+
+<div class="invoices-wrapper">
+    <h1>Mes factures</h1>
+
+    @if (Model.Invoices.Count == 0)
+    {
+        <p class="invoice-empty">Aucune facture trouvée pour le moment.</p>
+    }
+    else
+    {
+        <table class="invoices-table">
+        <thead>
+            <tr>
+                <th>Numéro</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>Statut</th>
+                <th>Téléchargement</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var invoice in Model.Invoices)
+        {
+            <tr>
+                <td>@invoice.Number</td>
+                <td>@invoice.Date?.ToString("dd/MM/yyyy")</td>
+                <td>@invoice.Amount.ToString("C2", System.Globalization.CultureInfo.CreateSpecificCulture("fr-CH"))</td>
+                <td>@invoice.Status</td>
+                <td>
+                    <a asp-page="/Invoices/Download"
+                        asp-route-id="@invoice.Id"
+                        target="_blank"
+                        class="invoice-download-link">
+                        Télécharger le PDF
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    }
+</div>

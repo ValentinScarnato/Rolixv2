@@ -109,7 +109,11 @@ public class ProductService
                 "productid",
                 "name",
                 "description",
-                "entityimage"
+                "entityimage",
+                "rlx_mouvement",
+                "rlx_materiaux",
+                "rlx_etancheitem",
+                "rlx_dimensions"
             )
         );
 
@@ -136,7 +140,11 @@ public class ProductService
             Price = 0,
             ImageBase64 = imageBytes != null
                 ? $"data:image/png;base64,{Convert.ToBase64String(imageBytes)}"
-                : null
+                : null,
+            Mouvement = e.GetAttributeValue<string>("rlx_mouvement"),
+            Materiaux = e.GetAttributeValue<string>("rlx_materiaux"),
+            Etancheite = e.GetAttributeValue<int>("rlx_etancheitem"),
+            Dimensions = e.GetAttributeValue<string>("rlx_dimensions")
         };
     }
 

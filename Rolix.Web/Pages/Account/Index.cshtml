@@ -138,6 +138,11 @@
                         </div>
 
                         <div class="account-help-card">
+                            <h3>Factures</h3>
+                            <a asp-page="/Invoices/Index" class="btn-primary-large" style="margin-bottom:6px; padding:6px 14px; font-size:0.8rem;">Voir mes factures</a>
+                        </div>
+
+                        <div class="account-help-card">
                             <h3>Historique</h3>
                         @if (Model.QuoteRequests != null && Model.QuoteRequests.Any())
                         {

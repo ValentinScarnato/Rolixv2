@@ -17,6 +17,7 @@ builder.Services.AddSingleton<DataverseService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ContactService>();
 builder.Services.AddScoped<QuoteService>();
+builder.Services.AddScoped<InvoiceService>();
 
 var app = builder.Build();
 
