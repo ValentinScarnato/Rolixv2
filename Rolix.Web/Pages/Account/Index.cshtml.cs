@@ -118,6 +118,19 @@ namespace Rolix.Web.Pages.Account
             return RedirectToPage();
         }
 
+        public IActionResult OnGetLogout()
+        {
+            HttpContext.Session.Clear();
+            TempData["Success"] = "Vous êtes déconnecté.";
+
+            if (!string.IsNullOrEmpty(ReturnUrl))
+            {
+                return Redirect(ReturnUrl);
+            }
+
+            return RedirectToPage();
+        }
+
         public IActionResult OnPostRegister()
         {
             ModelState.Clear();
@@ -211,12 +224,15 @@ namespace Rolix.Web.Pages.Account
 
         [Required(ErrorMessage = "L'email est requis.")]
         [EmailAddress(ErrorMessage = "Format d'email invalide.")]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+$", ErrorMessage = "L'email doit contenir un @.")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le nom d'utilisateur est requis.")]
         public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Le mot de passe est requis.")]
+        [MinLength(12, ErrorMessage = "Le mot de passe doit contenir au moins 12 caractères.")]
+        [RegularExpression(@"^(?=.*[!@#$%^&*(),.?':;{}|<>_\-+=\[\]\\\/`~]).*$", ErrorMessage = "Le mot de passe doit contenir au moins un caractère spécial.")]
         public string Password { get; set; } = string.Empty;
     }
 
