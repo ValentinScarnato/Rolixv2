@@ -94,8 +94,13 @@ namespace Rolix.Web.Pages.Account
             HttpContext.Session.SetString(SessionKeys.ContactName, contact.FullName ?? contact.DisplayName);
             HttpContext.Session.SetString(SessionKeys.ContactEmail, contact.Email ?? string.Empty);
             HttpContext.Session.SetString(SessionKeys.ContactUsername, contact.Username ?? string.Empty);
+            if (contact.AccountRoleCode.HasValue)
+            {
+                HttpContext.Session.SetInt32(SessionKeys.AccountRoleCode, contact.AccountRoleCode.Value);
+            }
 
             TempData["Success"] = "Connexion réussie.";
+
 
             if (!string.IsNullOrEmpty(ReturnUrl))
             {

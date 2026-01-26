@@ -26,7 +26,19 @@ namespace Rolix.Web.Pages.Invoices
                 return RedirectToPage("/Account/Index");
 
             Invoices = _invoiceService.GetInvoicesForContact(contactId);
+            Invoices = _invoiceService.GetInvoicesForContact(contactId);
             return Page();
+        }
+
+        public IActionResult OnPostRate(Guid id, int rating)
+        {
+            var contactIdStr = HttpContext.Session.GetString("ContactId");
+            if (string.IsNullOrEmpty(contactIdStr))
+                return RedirectToPage("/Account/Index");
+
+            _invoiceService.UpdateInvoiceRating(id, rating);
+
+            return RedirectToPage();
         }
     }
 }

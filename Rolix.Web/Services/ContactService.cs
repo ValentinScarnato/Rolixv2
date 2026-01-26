@@ -26,7 +26,8 @@ public class ContactService
                 "fullname",
                 "emailaddress2",
                 "adx_identity_username",
-                "rlx_password"
+                "rlx_password",
+                "accountrolecode"
             ),
         };
 
@@ -57,7 +58,8 @@ public class ContactService
                 "lastname",
                 "fullname",
                 "emailaddress2",
-                "adx_identity_username"
+                "adx_identity_username",
+                "accountrolecode"
             )
         );
 
@@ -76,7 +78,8 @@ public class ContactService
                 "lastname",
                 "fullname",
                 "emailaddress2",
-                "adx_identity_username"
+                "adx_identity_username",
+                "accountrolecode"
             ),
         };
 
@@ -105,7 +108,8 @@ public class ContactService
                 "lastname",
                 "fullname",
                 "emailaddress2",
-                "adx_identity_username"
+                "adx_identity_username",
+                "accountrolecode"
             ),
         };
 
@@ -147,6 +151,10 @@ public class ContactService
 
     private static Contact MapContact(Entity entity)
     {
+        // Get accountrolecode as OptionSetValue and extract the integer value
+        var roleCodeOptionSet = entity.GetAttributeValue<OptionSetValue>("accountrolecode");
+        int? accountRoleCode = roleCodeOptionSet?.Value;
+
         return new Contact
         {
             Id = entity.Id,
@@ -155,6 +163,7 @@ public class ContactService
             FullName = entity.GetAttributeValue<string>("fullname"),
             Email = entity.GetAttributeValue<string>("emailaddress2"),
             Username = entity.GetAttributeValue<string>("adx_identity_username"),
+            AccountRoleCode = accountRoleCode,
         };
     }
 }

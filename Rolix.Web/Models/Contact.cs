@@ -9,6 +9,7 @@ public class Contact
 
     public string? FullName { get; set; }
     public string? Username { get; set; }
+    public int? AccountRoleCode { get; set; }
 
     public string DisplayName => $"{FirstName} {LastName}".Trim();
 }

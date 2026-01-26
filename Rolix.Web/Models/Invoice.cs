@@ -10,5 +10,6 @@ namespace Rolix.Web.Models
         public decimal Amount { get; set; }
         public string Status { get; set; } = string.Empty;
         public string? PdfUrl { get; set; }
+        public int? CustomerRating { get; set; }
     }
 }

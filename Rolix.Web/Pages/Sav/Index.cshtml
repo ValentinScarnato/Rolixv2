@@ -55,58 +55,172 @@
         }
 
         <div class="sav-section">
-            <h2>Créer une demande SAV</h2>
-            <p class="section-description">Sélectionnez le produit concerné et décrivez le problème rencontré.</p>
+            <h2>Nouvelle demande SAV</h2>
+            <p class="section-description">Sélectionnez un produit parmi vos achats pour effectuer une demande de retour.</p>
 
-            <form method="post" class="sav-form">
-                <div class="form-group">
-                    <label asp-for="ProductId">Produit concerné</label>
-                    <select asp-for="ProductId" class="glass-input-clean" required>
-                        <option value="">-- Sélectionnez un produit --</option>
-                        @foreach (var product in Model.Products)
-                        {
-                            <option value="@product.Id">@product.Name - @product.Price.ToString("C", new System.Globalization.CultureInfo("fr-CH"))</option>
-                        }
-                    </select>
-                    <span asp-validation-for="ProductId" class="text-danger"></span>
+            @if (Model.PurchasedProducts.Any())
+            {
+                <div class="table-wrapper">
+                    <table class="rolix-table">
+                        <thead>
+                            <tr>
+                                <th>Date d'achat</th>
+                                <th>Produit</th>
+                                <th>Montant</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.PurchasedProducts)
+                            {
+                                <tr>
+                                    <td>@product.PurchaseDate.ToString("dd/MM/yyyy")</td>
+                                    <td><strong>@product.ProductName</strong></td>
+                                    <td class="amount">@product.Amount.ToString("C2", System.Globalization.CultureInfo.CreateSpecificCulture("fr-CH"))</td>
+                                    <td>
+                                        @if (product.HasSavRequest)
+                                        {
+                                            <button class="btn-disabled" disabled title="Une demande est déjà en cours pour ce produit">
+                                                <i class="bi bi-check-circle"></i> Demande en cours
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn-sav-action" onclick="openSavModal('@product.ProductId', '@product.ProductName')">
+                                                <i class="bi bi-tools"></i> Demander SAV
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-
-                <div class="form-group">
-                    <label asp-for="Diagnostic">Diagnostic / Description du problème</label>
-                    <textarea asp-for="Diagnostic" class="glass-input-clean" rows="5" placeholder="Décrivez le problème rencontré avec votre montre..." required></textarea>
-                    <span asp-validation-for="Diagnostic" class="text-danger"></span>
+            }
+            else
+            {
+                <div class="empty-state-small">
+                    <i class="bi bi-bag-x"></i>
+                    <p>Aucun produit éligible trouvé dans vos achats.</p>
                 </div>
-
-                <button type="submit" class="btn-primary-large">
-                    <i class="bi bi-send"></i> Créer la demande SAV
-                </button>
-            </form>
+            }
         </div>
 
         @if (Model.SavRequests.Any())
         {
             <div class="sav-section">
                 <h2>Mes demandes SAV</h2>
-                <div class="sav-list">
-                    @foreach (var request in Model.SavRequests)
-                    {
-                        <div class="sav-card">
-                            <div class="sav-header">
-                                <span class="sav-ticket">@request.TicketNumber</span>
-                                <span class="sav-date">@request.ReceptionDate.ToString("dd/MM/yyyy")</span>
-                            </div>
-                            <div class="sav-body">
-                                <h3>@request.WatchModel</h3>
-                                @if (!string.IsNullOrEmpty(request.Diagnostic))
-                                {
-                                    <p class="sav-diagnostic">@request.Diagnostic</p>
-                                }
-                            </div>
-                        </div>
-                    }
+                <div class="table-wrapper">
+                    <table class="rolix-table">
+                        <thead>
+                            <tr>
+                                <th>Numéro Ticket</th>
+                                <th>Date</th>
+                                <th>Produit</th>
+                                <th>Problème</th>
+                                <th>Statut</th>
+                                <th>Notez votre expérience</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in Model.SavRequests)
+                            {
+                                <tr>
+                                    <td><strong>@request.TicketNumber</strong></td>
+                                    <td>@request.ReceptionDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@request.WatchModel</td>
+                                    <td class="diagnostic-cell">
+                                        @request.Diagnostic
+                                    </td>
+                                    <td>
+                                        <span class="status-badge @(request.Status == "Terminé" ? "status-success" : "status-warning")">
+                                            @request.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (request.Status == "Terminé")
+                                        {
+                                            @if (request.CustomerRating.HasValue)
+                                            {
+                                                <div class="rating-display" style="cursor: default;">
+                                                    <span class="star-text">@request.CustomerRating/5</span> <i class="bi bi-check-circle-fill" style="color: #ffc107; margin-left: 5px;"></i> Merci !
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn-rate" onclick="openRatingModal('@request.Id', 0)">
+                                                    <i class="bi bi-star"></i> Noter
+                                                </button>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span style="color: rgba(255,255,255,0.2); font-size: 0.8rem;">-</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         }
+
+<!-- Modal pour la notation SAV -->
+<div id="ratingModal" class="modal-overlay">
+    <div class="modal-content small-modal">
+        <div class="modal-header">
+            <h3>Noter le service</h3>
+            <button type="button" class="close-modal" onclick="closeRatingModal()">×</button>
+        </div>
+        <div class="rating-modal-body">
+            <p>Quelle note donnez-vous à notre service SAV ?</p>
+            <div class="rating-numbers-large">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <button type="button" class="btn-rate-num-large" id="btn-num-@i" onclick="selectModalRating(@i)">@i</button>
+                }
+            </div>
+        </div>
+        <form method="post" id="savRatingForm" asp-page-handler="Rate">
+            <input type="hidden" name="id" id="modalRatingId" />
+            <input type="hidden" name="rating" id="modalRatingValue" />
+            <div class="modal-actions centered">
+                 <button type="submit" class="btn-primary-small" disabled id="btnSubmitRating">Envoyer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal pour la demande SAV (Existing) -->
+
+        
+    </div>
+</div>
+
+<!-- Modal pour la demande SAV -->
+<div id="savModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Demande SAV : <span id="modalProductName"></span></h3>
+            <button type="button" class="close-modal" onclick="closeSavModal()">×</button>
+        </div>
+        <form method="post" class="sav-form">
+            <input type="hidden" asp-for="ProductId" id="modalProductId" />
+            
+            <div class="form-group">
+                <label asp-for="Diagnostic">Description du problème</label>
+                <textarea asp-for="Diagnostic" class="glass-input-clean" rows="5" placeholder="Décrivez le problème rencontré avec votre montre..." required></textarea>
+                <span asp-validation-for="Diagnostic" class="text-danger"></span>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeSavModal()">Annuler</button>
+                <button type="submit" class="btn-primary-large">
+                    <i class="bi bi-send"></i> Envoyer la demande
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -121,8 +235,10 @@
 
 .sav-section h2 {
     font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
 }
 
 .section-description {
@@ -130,88 +246,347 @@
     margin-bottom: 1.5rem;
 }
 
-.sav-form {
-    max-width: 600px;
+.table-wrapper {
+    overflow-x: auto;
 }
 
-.sav-form .form-group {
-    margin-bottom: 1.5rem;
+.rolix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
 }
 
-.sav-form label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 500;
-}
-
-.sav-list {
-    display: grid;
-    gap: 1rem;
-}
-
-.sav-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.sav-card:hover {
+.rolix-table thead {
     background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.sav-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sav-ticket {
+.rolix-table th {
+    padding: 15px 12px;
+    text-align: left;
     font-weight: 600;
-    color: #4CAF50;
-    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
 }
 
-.sav-date {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.9rem;
+.rolix-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    vertical-align: middle;
 }
 
-.sav-body h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    color: #fff;
+.rolix-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
 }
 
-.sav-diagnostic {
+.rolix-table .amount {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.diagnostic-cell {
+    max-width: 300px;
+    white-space: normal;
+    word-wrap: break-word;
     color: rgba(255, 255, 255, 0.7);
-    line-height: 1.6;
 }
 
-.alert {
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
-.alert-success {
+.status-success {
     background: rgba(76, 175, 80, 0.1);
     border: 1px solid rgba(76, 175, 80, 0.3);
     color: #4CAF50;
 }
 
-.alert-danger {
-    background: rgba(244, 67, 54, 0.1);
-    border: 1px solid rgba(244, 67, 54, 0.3);
-    color: #f44336;
+.status-warning {
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    color: #ff9800;
+}
+
+.btn-sav-action {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--accent-gold);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-sav-action:hover {
+    background: rgba(212, 175, 55, 0.25);
+    transform: translateY(-2px);
+}
+
+.btn-disabled {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.4);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: not-allowed;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.empty-state-small {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.empty-state-small i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--accent-gold);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sav-form textarea {
+    width: 100%;
+    resize: vertical;
+}
+
+/* Allow wrapping for diagnostic cell */
+.diagnostic-cell {
+    white-space: normal;
+    max-width: 300px;
+    line-height: 1.5;
+}
+
+.rating-numbers-large {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 2rem;
+}
+
+.btn-rate-num-large {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-rate-num-large:hover, .btn-rate-num-large.active {
+    background: var(--accent-gold);
+    color: #000;
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-rate {
+    background: transparent;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.btn-rate:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.btn-primary-small {
+    background: var(--accent-gold);
+    color: #000;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    font-size: 1rem;
+}
+
+.rating-display {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.rating-display:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.star-text {
+    font-weight: 600;
+    color: #fff;
 }
 </style>
+
+<script>
+    // SAV Modal
+    function openSavModal(productId, productName) {
+        document.getElementById('modalProductId').value = productId;
+        document.getElementById('modalProductName').textContent = productName;
+        document.getElementById('savModal').style.display = 'flex';
+    }
+
+    function closeSavModal() {
+        document.getElementById('savModal').style.display = 'none';
+    }
+
+    // Rating Modal
+    function openRatingModal(requestId, currentRating) {
+        document.getElementById('modalRatingId').value = requestId;
+        document.getElementById('ratingModal').style.display = 'flex';
+        
+        // Reset stars
+        if (currentRating > 0) {
+            selectModalRating(currentRating);
+        } else {
+            resetStars();
+        }
+    }
+
+    function closeRatingModal() {
+        document.getElementById('ratingModal').style.display = 'none';
+    }
+    
+    function selectModalRating(rating) {
+        document.getElementById('modalRatingValue').value = rating;
+        document.getElementById('btnSubmitRating').disabled = false;
+        
+        // Update visual buttons
+        for (let i = 1; i <= 5; i++) {
+            const btn = document.getElementById('btn-num-' + i);
+            if (i <= rating) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+    }
+    
+    function resetStars() {
+        document.getElementById('modalRatingValue').value = "";
+        document.getElementById('btnSubmitRating').disabled = true;
+        for (let i = 1; i <= 5; i++) {
+            const btn = document.getElementById('btn-num-' + i);
+            btn.classList.remove('active');
+        }
+    }
+
+    // Fermer les modaux si on clique en dehors
+    window.onclick = function(event) {
+        var savModal = document.getElementById('savModal');
+        var ratingModal = document.getElementById('ratingModal');
+        
+        if (event.target == savModal) {
+            closeSavModal();
+        }
+        if (event.target == ratingModal) {
+            closeRatingModal();
+        }
+    }
+</script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

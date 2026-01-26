@@ -24,7 +24,7 @@ namespace Rolix.Web.Services
             var client = _dataverse.GetClient();
             var query = new QueryExpression("invoice")
             {
-                ColumnSet = new ColumnSet("invoiceid", "invoicenumber", "totalamount", "statuscode", "createdon"),
+                ColumnSet = new ColumnSet("invoiceid", "invoicenumber", "totalamount", "statuscode", "createdon", "rlx_noteclient"),
             };
 
             query.Criteria.AddCondition("customerid", ConditionOperator.Equal, contactId);
@@ -32,6 +32,61 @@ namespace Rolix.Web.Services
 
             var result = client.RetrieveMultiple(query);
             return result.Entities.Select(MapInvoice).ToList();
+        }
+
+        public void UpdateInvoiceRating(Guid invoiceId, int rating)
+        {
+            if (rating < 1 || rating > 5) return;
+
+            var client = _dataverse.GetClient();
+            var invoice = new Entity("invoice", invoiceId);
+            invoice["rlx_noteclient"] = rating;
+            client.Update(invoice);
+        }
+
+
+
+        public List<PurchasedProduct> GetPurchasedProductsForContact(Guid contactId)
+        {
+            var client = _dataverse.GetClient();
+            
+            // Query invoice details for all invoices belonging to this contact
+            var query = new QueryExpression("invoicedetail")
+            {
+                ColumnSet = new ColumnSet("invoicedetailid", "invoiceid", "productid", "priceperunit", "baseamount", "quantity"),
+            };
+
+            // Link to invoice to filter by customer
+            var invoiceLink = query.AddLink("invoice", "invoiceid", "invoiceid");
+            invoiceLink.LinkCriteria.AddCondition("customerid", ConditionOperator.Equal, contactId);
+            invoiceLink.Columns = new ColumnSet("createdon");
+
+            // Link to product to get product name
+            var productLink = query.AddLink("product", "productid", "productid");
+            productLink.Columns = new ColumnSet("name");
+
+            query.Orders.Add(new OrderExpression("createdon", OrderType.Descending));
+
+            var result = client.RetrieveMultiple(query);
+            return result.Entities.Select(MapPurchasedProduct).ToList();
+        }
+
+        private static PurchasedProduct MapPurchasedProduct(Entity e)
+        {
+            var invoiceRef = e.GetAttributeValue<AliasedValue>("invoice.createdon");
+            var productRef = e.GetAttributeValue<EntityReference>("productid");
+            var productName = e.GetAttributeValue<AliasedValue>("product.name");
+
+            return new PurchasedProduct
+            {
+                InvoiceDetailId = e.Id,
+                InvoiceId = e.GetAttributeValue<EntityReference>("invoiceid")?.Id ?? Guid.Empty,
+                ProductId = productRef?.Id ?? Guid.Empty,
+                ProductName = productName?.Value?.ToString() ?? productRef?.Name ?? string.Empty,
+                PurchaseDate = invoiceRef?.Value as DateTime? ?? DateTime.Now,
+                Amount = e.GetAttributeValue<Money>("baseamount")?.Value ?? 0,
+                HasSavRequest = false // Will be set by the calling code
+            };
         }
 
         private static Invoice MapInvoice(Entity e)
@@ -43,7 +98,8 @@ namespace Rolix.Web.Services
                 Date = e.GetAttributeValue<DateTime?>("createdon"),
                 Amount = e.GetAttributeValue<Money>("totalamount")?.Value ?? 0,
                 Status = e.FormattedValues.Contains("statuscode") ? e.FormattedValues["statuscode"] : string.Empty,
-                PdfUrl = null // À implémenter si un champ ou une méthode fournit l’URL du PDF
+                PdfUrl = null, // À implémenter si un champ ou une méthode fournit l'URL du PDF
+                CustomerRating = e.GetAttributeValue<int?>("rlx_noteclient")
             };
         }
         public byte[]? GetInvoicePdf(Guid invoiceId)

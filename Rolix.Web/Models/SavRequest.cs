@@ -10,5 +10,7 @@ namespace Rolix.Web.Models
         public DateTime ReceptionDate { get; set; }
         public string? Diagnostic { get; set; }
         public Guid? ProductId { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public int? CustomerRating { get; set; }
     }
 }

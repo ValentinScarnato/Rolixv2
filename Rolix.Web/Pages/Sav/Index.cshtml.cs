@@ -11,16 +11,16 @@ namespace Rolix.Web.Pages.Sav
     public class IndexModel : PageModel
     {
         private readonly SavService _savService;
-        private readonly ProductService _productService;
+        private readonly InvoiceService _invoiceService;
 
-        public IndexModel(SavService savService, ProductService productService)
+        public IndexModel(SavService savService, InvoiceService invoiceService)
         {
             _savService = savService;
-            _productService = productService;
+            _invoiceService = invoiceService;
         }
 
         public List<SavRequest> SavRequests { get; set; } = new();
-        public List<Product> Products { get; set; } = new();
+        public List<PurchasedProduct> PurchasedProducts { get; set; } = new();
 
         [BindProperty]
         public Guid ProductId { get; set; }
@@ -41,8 +41,7 @@ namespace Rolix.Web.Pages.Sav
             if (!Guid.TryParse(contactIdStr, out var contactId))
                 return RedirectToPage("/Account/Index");
 
-            SavRequests = _savService.GetSavRequestsForContact(contactId);
-            Products = _productService.GetAll();
+            LoadData(contactId);
 
             return Page();
         }
@@ -56,34 +55,74 @@ namespace Rolix.Web.Pages.Sav
             if (!ModelState.IsValid)
             {
                 ErrorMessage = "Veuillez remplir tous les champs requis.";
-                SavRequests = _savService.GetSavRequestsForContact(contactId);
-                Products = _productService.GetAll();
+                LoadData(contactId);
                 return Page();
             }
 
             try
             {
-                var product = _productService.GetById(ProductId);
-                if (product == null)
+                // Vérifier si le produit a bien été acheté par le client
+                var purchasedProducts = _invoiceService.GetPurchasedProductsForContact(contactId);
+                var purchasedProduct = purchasedProducts.FirstOrDefault(p => p.ProductId == ProductId);
+
+                if (purchasedProduct == null)
                 {
-                    ErrorMessage = "Produit introuvable.";
-                    SavRequests = _savService.GetSavRequestsForContact(contactId);
-                    Products = _productService.GetAll();
+                    ErrorMessage = "Produit non trouvé dans vos achats ou erreur de référence.";
+                    LoadData(contactId);
                     return Page();
                 }
 
-                _savService.CreateSavRequest(contactId, ProductId, product.Name, Diagnostic);
+                _savService.CreateSavRequest(contactId, ProductId, purchasedProduct.ProductName, Diagnostic);
                 SuccessMessage = "Votre demande SAV a été créée avec succès. Nous vous contacterons sous peu.";
 
                 return RedirectToPage();
             }
-            catch (Exception)
+            catch (InvalidOperationException ex)
             {
-                ErrorMessage = "Une erreur est survenue lors de la création de votre demande SAV.";
-                SavRequests = _savService.GetSavRequestsForContact(contactId);
-                Products = _productService.GetAll();
+                ErrorMessage = ex.Message;
+                LoadData(contactId);
                 return Page();
             }
+            catch (Exception ex)
+            {
+                var fullError = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    fullError += " | Inner: " + ex.InnerException.Message;
+                }
+                ErrorMessage = $"Erreur technique : {fullError}";
+                LoadData(contactId);
+                return Page();
+            }
+        }
+
+        public IActionResult OnPostRate(Guid id, int rating)
+        {
+            var contactIdStr = HttpContext.Session.GetString("ContactId");
+            if (string.IsNullOrEmpty(contactIdStr))
+                return RedirectToPage("/Account/Index");
+
+            _savService.UpdateSavRequestRating(id, rating);
+
+            return RedirectToPage();
+        }
+
+        private void LoadData(Guid contactId)
+        {
+            SavRequests = _savService.GetSavRequestsForContact(contactId);
+            PurchasedProducts = _invoiceService.GetPurchasedProductsForContact(contactId);
+
+            // Marquer les produits qui ont déjà une demande SAV
+            // On peut le faire en mémoire ou via la méthode dédiée du service pour chaque produit
+            // Pour optimiser, on peut regarder la liste des SavRequests chargées
+            foreach (var product in PurchasedProducts)
+            {
+                product.HasSavRequest = SavRequests.Any(s => s.ProductId == product.ProductId);
+            }
+            
+            // Si on veut être sûr à 100% (par ex si une demande terminée n'est pas chargée dans SavRequests mais compte quand même)
+            // On pourrait appeler _savService.HasSavRequestForProduct pour chaque produit, mais c'est moins performant.
+            // La méthode actuelle via la liste chargée est cohérente avec ce que l'utilisateur voit.
         }
     }
 }

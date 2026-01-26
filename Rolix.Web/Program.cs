@@ -24,6 +24,7 @@ builder.Services.AddScoped<QuoteService>();
 builder.Services.AddScoped<InvoiceService>();
 builder.Services.AddScoped<LeadService>();
 builder.Services.AddScoped<SavService>();
+builder.Services.AddScoped<ModificationService>();
 
 var app = builder.Build();
 
