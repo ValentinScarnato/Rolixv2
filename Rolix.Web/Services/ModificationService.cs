@@ -13,7 +13,7 @@ public class ModificationService
         _dataverse = dataverse;
     }
 
-    public Modification? GetLatestModification()
+    public Modification? GetLatestModification(int languageCode)
     {
         var client = _dataverse.GetClient();
 
@@ -23,6 +23,7 @@ public class ModificationService
                 "rlx_modificationid",
                 "rlx_modificationnom",
                 "rlx_datedemodification",
+                "rlx_langue",
                 "rlx_title",
                 "rlx_subtitle",
                 "rlx_title1",
@@ -33,7 +34,6 @@ public class ModificationService
                 "rlx_title2",
                 "rlx_content2",
                 "rlx_gallery",
-                "rlx_section",
                 // Maison section fields
                 "rlx_maisontitle",
                 "rlx_maisonbadge",
@@ -41,13 +41,6 @@ public class ModificationService
                 "rlx_paragraph2",
                 "rlx_paragraph3",
                 "rlx_editorialquote",
-                // Statistics fields
-                "rlx_stat1number",
-                "rlx_stat1label",
-                "rlx_stat2number",
-                "rlx_stat2label",
-                "rlx_stat3number",
-                "rlx_stat3label",
                 // Archives fields
                 "rlx_archivestitle",
                 "rlx_archive1text",
@@ -56,6 +49,8 @@ public class ModificationService
             ),
             TopCount = 1
         };
+
+        query.Criteria.AddCondition("rlx_langue", ConditionOperator.Equal, languageCode);
 
         query.Orders.Add(new OrderExpression("rlx_datedemodification", OrderType.Descending));
 
@@ -70,16 +65,17 @@ public class ModificationService
         return MapModification(entity);
     }
 
-    public Guid SaveModification(Modification modification)
+    public Guid SaveModification(Modification modification, int languageCode)
     {
         var client = _dataverse.GetClient();
 
-        // Check if a modification already exists
+        // Check if a modification already exists for this language - get the most recently created one
         var query = new QueryExpression("rlx_modification")
         {
             ColumnSet = new ColumnSet("rlx_modificationid"),
             TopCount = 1
         };
+        query.Criteria.AddCondition("rlx_langue", ConditionOperator.Equal, languageCode);
         query.Orders.Add(new OrderExpression("createdon", OrderType.Descending));
 
         var result = client.RetrieveMultiple(query);
@@ -101,8 +97,8 @@ public class ModificationService
         }
 
         // Set all fields
-        entity["rlx_modificationnom"] = modification.ModificationName;
         entity["rlx_datedemodification"] = DateTime.Now;
+        entity["rlx_langue"] = new OptionSetValue(languageCode);
         
         // Hero section
         entity["rlx_title"] = modification.Title;
@@ -123,7 +119,6 @@ public class ModificationService
         
         // Gallery
         entity["rlx_gallery"] = modification.Gallery;
-        entity["rlx_section"] = modification.Section;
         
         // Maison section
         entity["rlx_maisontitle"] = modification.MaisonTitle;
@@ -132,14 +127,6 @@ public class ModificationService
         entity["rlx_paragraph2"] = modification.Paragraph2;
         entity["rlx_paragraph3"] = modification.Paragraph3;
         entity["rlx_editorialquote"] = modification.EditorialQuote;
-        
-        // Statistics
-        entity["rlx_stat1number"] = modification.Stat1Number;
-        entity["rlx_stat1label"] = modification.Stat1Label;
-        entity["rlx_stat2number"] = modification.Stat2Number;
-        entity["rlx_stat2label"] = modification.Stat2Label;
-        entity["rlx_stat3number"] = modification.Stat3Number;
-        entity["rlx_stat3label"] = modification.Stat3Label;
         
         // Archives
         entity["rlx_archivestitle"] = modification.ArchivesTitle;
@@ -165,6 +152,7 @@ public class ModificationService
             Id = entity.Id,
             ModificationName = entity.GetAttributeValue<string>("rlx_modificationnom"),
             ModificationDate = entity.GetAttributeValue<DateTime?>("rlx_datedemodification"),
+            LanguageCode = entity.GetAttributeValue<OptionSetValue>("rlx_langue")?.Value,
             
             // Hero section
             Title = entity.GetAttributeValue<string>("rlx_title"),
@@ -185,7 +173,6 @@ public class ModificationService
             
             // Gallery
             Gallery = entity.GetAttributeValue<string>("rlx_gallery"),
-            Section = entity.GetAttributeValue<string>("rlx_section"),
             
             // Maison section
             MaisonTitle = entity.GetAttributeValue<string>("rlx_maisontitle"),
@@ -194,14 +181,6 @@ public class ModificationService
             Paragraph2 = entity.GetAttributeValue<string>("rlx_paragraph2"),
             Paragraph3 = entity.GetAttributeValue<string>("rlx_paragraph3"),
             EditorialQuote = entity.GetAttributeValue<string>("rlx_editorialquote"),
-            
-            // Statistics
-            Stat1Number = entity.GetAttributeValue<string>("rlx_stat1number"),
-            Stat1Label = entity.GetAttributeValue<string>("rlx_stat1label"),
-            Stat2Number = entity.GetAttributeValue<string>("rlx_stat2number"),
-            Stat2Label = entity.GetAttributeValue<string>("rlx_stat2label"),
-            Stat3Number = entity.GetAttributeValue<string>("rlx_stat3number"),
-            Stat3Label = entity.GetAttributeValue<string>("rlx_stat3label"),
             
             // Archives
             ArchivesTitle = entity.GetAttributeValue<string>("rlx_archivestitle"),

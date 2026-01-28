@@ -26,7 +26,18 @@ builder.Services.AddScoped<LeadService>();
 builder.Services.AddScoped<SavService>();
 builder.Services.AddScoped<ModificationService>();
 
+// Localization
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 var app = builder.Build();
+
+var supportedCultures = new[] { "fr", "en" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("fr")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
 
 if (!app.Environment.IsDevelopment())
 {

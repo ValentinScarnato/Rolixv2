@@ -1,7 +1,8 @@
 @page
 @model Rolix.Web.Pages.Account.IndexModel
+@using Rolix.Web.Helpers
 @{
-    ViewData["Title"] = "Espace Client";
+    ViewData["Title"] = LocalizationHelper.Get("Account_PageTitle", HttpContext);
 }
 
 <link rel="stylesheet" href="~/css/account.css" />
@@ -19,27 +20,27 @@
             <nav class="account-menu">
                 <a href="/Account" class="menu-item active">
                     <i class="bi bi-person"></i>
-                    <span>Mon Profil</span>
+                    <span>@LocalizationHelper.Get("Account_MenuProfile", HttpContext)</span>
                 </a>
                 <a href="/Invoices" class="menu-item">
                     <i class="bi bi-receipt"></i>
-                    <span>Mes Factures</span>
+                    <span>@LocalizationHelper.Get("Account_MenuInvoices", HttpContext)</span>
                 </a>
                 <a href="/Sav" class="menu-item">
                     <i class="bi bi-tools"></i>
-                    <span>Retours SAV</span>
+                    <span>@LocalizationHelper.Get("Account_MenuSav", HttpContext)</span>
                 </a>
                 <a href="/Account?handler=Logout" class="menu-item logout">
                     <i class="bi bi-box-arrow-right"></i>
-                    <span>Déconnexion</span>
+                    <span>@LocalizationHelper.Get("Account_MenuLogout", HttpContext)</span>
                 </a>
             </nav>
         </div>
 
         <div class="account-content">
             <div class="content-header">
-                <h1>Mon Profil</h1>
-                <p class="subtitle">Gérez vos informations personnelles</p>
+                <h1>@LocalizationHelper.Get("Account_ProfileTitle", HttpContext)</h1>
+                <p class="subtitle">@LocalizationHelper.Get("Account_ProfileSubtitle", HttpContext)</p>
             </div>
 
             @if (TempData["Success"] is string success)
@@ -50,35 +51,35 @@
             <div class="profile-info-card">
                 <div class="profile-header">
                     <div>
-                        <p class="profile-label">Identifié en tant que</p>
+                        <p class="profile-label">@LocalizationHelper.Get("Account_IdentifiedAs", HttpContext)</p>
                         <h2>@Model.ContactName</h2>
                         <p class="profile-email">@Model.ContactEmail</p>
                     </div>
-                    <span class="member-badge">Membre Privilège</span>
+                    <span class="member-badge">@LocalizationHelper.Get("Account_MemberBadge", HttpContext)</span>
                 </div>
             </div>
 
             <div class="profile-form-card">
-                <h3>Mes Informations</h3>
-                <p class="form-description">Mettez à jour vos coordonnées</p>
+                <h3>@LocalizationHelper.Get("Account_MyInfo", HttpContext)</h3>
+                <p class="form-description">@LocalizationHelper.Get("Account_UpdateInfo", HttpContext)</p>
 
                 <form method="post" class="stacked-form" asp-page-handler="Update">
                     <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
 
                     <div class="form-group">
-                        <label asp-for="Update.FullName">Nom Complet</label>
+                        <label asp-for="Update.FullName">@LocalizationHelper.Get("Account_FullName", HttpContext)</label>
                         <input asp-for="Update.FullName" class="glass-input-clean" />
                         <span asp-validation-for="Update.FullName" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Update.Email">Email Professionnel</label>
+                        <label asp-for="Update.Email">@LocalizationHelper.Get("Account_ProfessionalEmail", HttpContext)</label>
                         <input asp-for="Update.Email" class="glass-input-clean" />
                         <span asp-validation-for="Update.Email" class="text-danger"></span>
                     </div>
 
                     <button type="submit" class="btn-primary-large">
-                        <i class="bi bi-check-circle"></i> Enregistrer les modifications
+                        <i class="bi bi-check-circle"></i> @LocalizationHelper.Get("Account_SaveChanges", HttpContext)
                     </button>
                 </form>
             </div>
@@ -86,16 +87,16 @@
             <div class="quick-links-grid">
                 <div class="quick-link-card">
                     <i class="bi bi-receipt" style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
-                    <h3>Factures</h3>
-                    <p>Consultez et téléchargez vos factures</p>
-                    <a asp-page="/Invoices/Index" class="btn-link">Voir mes factures →</a>
+                    <h3>@LocalizationHelper.Get("Account_QuickInvoices", HttpContext)</h3>
+                    <p>@LocalizationHelper.Get("Account_QuickInvoicesDesc", HttpContext)</p>
+                    <a asp-page="/Invoices/Index" class="btn-link">@LocalizationHelper.Get("Account_QuickInvoicesLink", HttpContext) →</a>
                 </div>
 
                 <div class="quick-link-card">
                     <i class="bi bi-tools" style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
-                    <h3>Retours SAV</h3>
-                    <p>Gérez vos demandes de retour sous garantie</p>
-                    <a asp-page="/Sav/Index" class="btn-link">Mes retours SAV →</a>
+                    <h3>@LocalizationHelper.Get("Account_QuickSav", HttpContext)</h3>
+                    <p>@LocalizationHelper.Get("Account_QuickSavDesc", HttpContext)</p>
+                    <a asp-page="/Sav/Index" class="btn-link">@LocalizationHelper.Get("Account_QuickSavLink", HttpContext) →</a>
                 </div>
             </div>
         </div>
@@ -106,9 +107,9 @@ else
     <div class="login-wrapper">
         <div class="login-container">
             <div class="login-header">
-                <p class="eyebrow">Espace Privé</p>
-                <h1>Mon Compte</h1>
-                <p class="lead">Accédez à votre espace client</p>
+                <p class="eyebrow">@LocalizationHelper.Get("Account_PageTitle", HttpContext)</p>
+                <h1>@LocalizationHelper.Get("Account_LoginTitle", HttpContext)</h1>
+                <p class="lead">@LocalizationHelper.Get("Account_LoginSubtitle", HttpContext)</p>
             </div>
 
             @if (TempData["Success"] is string success)
@@ -119,21 +120,21 @@ else
             <div class="login-grid">
                 <div class="login-card">
                     <div class="card-header">
-                        <h2>Connexion</h2>
-                        <p>Accédez à votre compte</p>
+                        <h2>@LocalizationHelper.Get("Account_LoginHeader", HttpContext)</h2>
+                        <p>@LocalizationHelper.Get("Account_LoginDesc", HttpContext)</p>
                     </div>
 
                     <form method="post" class="stacked-form" asp-page-handler="Login">
                         <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
 
                         <div class="form-group">
-                            <label asp-for="Input.Username">Identifiant (Nom d'utilisateur)</label>
+                            <label asp-for="Input.Username">@LocalizationHelper.Get("Account_Username", HttpContext)</label>
                             <input asp-for="Input.Username" class="glass-input-clean" placeholder="ex: j.doe" />
                             <span asp-validation-for="Input.Username" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="Input.Password">Mot de passe</label>
+                            <label asp-for="Input.Password">@LocalizationHelper.Get("Account_Password", HttpContext)</label>
                             <input asp-for="Input.Password" class="glass-input-clean" type="password" />
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
@@ -148,44 +149,44 @@ else
                             </div>
                         }
 
-                        <button type="submit" class="btn-primary-large">Se connecter</button>
+                        <button type="submit" class="btn-primary-large">@LocalizationHelper.Get("Account_LoginBtn", HttpContext)</button>
                     </form>
                 </div>
 
                 <div class="login-card">
                     <div class="card-header">
-                        <h2>Nouveau Client ?</h2>
-                        <p>Créez un compte pour bénéficier de nos services exclusifs</p>
+                        <h2>@LocalizationHelper.Get("Account_RegisterHeader", HttpContext)</h2>
+                        <p>@LocalizationHelper.Get("Account_RegisterDesc", HttpContext)</p>
                     </div>
 
                     <form method="post" class="stacked-form" asp-page-handler="Register">
                         <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
 
                         <div class="form-group">
-                            <label asp-for="Register.FullName">Nom Complet</label>
+                            <label asp-for="Register.FullName">@LocalizationHelper.Get("Account_FullName", HttpContext)</label>
                             <input asp-for="Register.FullName" class="glass-input-clean" placeholder="Prénom Nom" />
                             <span asp-validation-for="Register.FullName" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="Register.Email">Email</label>
+                            <label asp-for="Register.Email">@LocalizationHelper.Get("Contact_Email", HttpContext)</label>
                             <input asp-for="Register.Email" class="glass-input-clean" placeholder="email@exemple.com" />
                             <span asp-validation-for="Register.Email" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="Register.Username">Identifiant souhaité</label>
+                            <label asp-for="Register.Username">@LocalizationHelper.Get("Account_RegisterUsername", HttpContext)</label>
                             <input asp-for="Register.Username" class="glass-input-clean" />
                             <span asp-validation-for="Register.Username" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="Register.Password">Mot de passe</label>
+                            <label asp-for="Register.Password">@LocalizationHelper.Get("Account_Password", HttpContext)</label>
                             <input asp-for="Register.Password" class="glass-input-clean" type="password" />
                             <span asp-validation-for="Register.Password" class="text-danger"></span>
                         </div>
 
-                        <button type="submit" class="btn-secondary-glass" style="width: 100%; justify-content: center;">Créer mon compte</button>
+                        <button type="submit" class="btn-secondary-glass" style="width: 100%; justify-content: center;">@LocalizationHelper.Get("Account_RegisterBtn", HttpContext)</button>
                     </form>
                 </div>
             </div>

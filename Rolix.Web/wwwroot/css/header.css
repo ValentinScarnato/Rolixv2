@@ -49,10 +49,10 @@
 
 
 
-    .rolix-logo img:hover {
-        transform: scale(1.1);
-        filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
-    }
+.rolix-logo img:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
+}
 
 
 
@@ -72,31 +72,31 @@
 
 
 
-    /* Soulignement doré */
+/* Soulignement doré */
 
-    .rolix-nav a:not(.nav-cta)::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: var(--accent-gold);
-        transition: width 0.3s;
-    }
-
-
-
-    .rolix-nav a:not(.nav-cta):hover {
-        color: var(--accent-gold) !important;
-        text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
-    }
+.rolix-nav a:not(.nav-cta)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent-gold);
+    transition: width 0.3s;
+}
 
 
 
-        .rolix-nav a:not(.nav-cta):hover::after {
-            width: 100%;
-        }
+.rolix-nav a:not(.nav-cta):hover {
+    color: var(--accent-gold) !important;
+    text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+
+
+.rolix-nav a:not(.nav-cta):hover::after {
+    width: 100%;
+}
 
 
 
@@ -116,15 +116,88 @@
     border-radius: 50px;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 
 
-    .nav-cta:hover {
-        /* Au survol : Il devient tout Or */
+.nav-cta:hover {
+    /* Au survol : Il devient tout Or */
 
-        background: var(--accent-gold) !important;
-        color: #251e3e !important;
-        transform: translateY(-2px);
-    }
+    background: var(--accent-gold) !important;
+    color: #251e3e !important;
+    transform: translateY(-2px);
+}
+
+/* --- CURRENCY SELECTOR --- */
+.currency-selector {
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.currency-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.currency-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent-gold);
+}
+
+.currency-btn svg {
+    opacity: 0.8;
+}
+
+.currency-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 200px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.currency-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.currency-dropdown a {
+    display: block;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.currency-dropdown a:last-child {
+    border-bottom: none;
+}
+
+.currency-dropdown a:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--accent-gold);
+    padding-left: 25px;
+}

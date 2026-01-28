@@ -1,5 +1,6 @@
 ﻿@page
 @model Rolix.Web.Pages.ContactModel
+@using Rolix.Web.Helpers
 @{
     ViewData["Title"] = "Service Clientèle";
 }
@@ -9,15 +10,15 @@
     <div class="ambient-light light-2"></div>
 
     <div class="hero-content">
-        <span class="since-badge fade-in-up">Service Clientèle</span>
-        <h1 class="hero-title fade-in-up delay-200">Nous Contacter</h1>
+        <span class="since-badge fade-in-up">@LocalizationHelper.Get("Contact_Title", HttpContext)</span>
+        <h1 class="hero-title fade-in-up delay-200">@LocalizationHelper.Get("Contact_HeroTitle", HttpContext)</h1>
         <p class="hero-subtitle fade-in-up delay-400">
-            Nos ambassadeurs vous accompagnent avec discrétion, précision et exigence — pour l’acquisition, l’entretien et le suivi de votre garde-temps.
+            @LocalizationHelper.Get("Contact_HeroSubtitle", HttpContext)
         </p>
 
         <div class="contact-quick-actions fade-in-up delay-600">
-            <a class="btn-secondary-glass" href="mailto:service@rolix.com">Écrire au service</a>
-            <a class="btn-primary" href="#contact-form">Envoyer une demande</a>
+            <a class="btn-secondary-glass" href="mailto:service@rolix.com">@LocalizationHelper.Get("Contact_EmailAction", HttpContext)</a>
+            <a class="btn-primary" href="#contact-form">@LocalizationHelper.Get("Contact_FormAction", HttpContext)</a>
         </div>
     </div>
 </section>
@@ -28,7 +29,7 @@
 
             <div class="contact-card info-card fade-in-up delay-600">
                 <div class="contact-card-header">
-                    <h3>La Boutique</h3>
+                    <h3>@LocalizationHelper.Get("Contact_StoreTitle", HttpContext)</h3>
                     <div class="contact-divider"></div>
                 </div>
 
@@ -52,7 +53,7 @@
                         </svg>
                     </span>
                     <div>
-                        <strong>Téléphone</strong>
+                        <strong>@LocalizationHelper.Get("Contact_Phone", HttpContext)</strong>
                         <p>+41 22 555 01 02</p>
                         <span class="sub-text">Du lundi au samedi, 10h - 19h</span>
                     </div>
@@ -67,24 +68,24 @@
                         </svg>
                     </span>
                     <div>
-                        <strong>Service Client</strong>
+                        <strong>@LocalizationHelper.Get("Contact_Service", HttpContext)</strong>
                         <p>service@rolix.com</p>
                     </div>
                 </div>
 
                 <div class="contact-highlight">
-                    <div class="contact-highlight-title">Rendez-vous privé</div>
-                    <div class="contact-highlight-subtitle">Sur demande — confidentialité et accueil dédié</div>
+                    <div class="contact-highlight-title">@LocalizationHelper.Get("Contact_PrivateAppointment", HttpContext)</div>
+                    <div class="contact-highlight-subtitle">@LocalizationHelper.Get("Contact_PrivateAppointmentDesc", HttpContext)</div>
                 </div>
 
                 <a class="contact-map" href="https://www.google.com/maps" target="_blank" rel="noreferrer">
-                    Voir sur la carte
+                    @LocalizationHelper.Get("Contact_ViewOnMap", HttpContext)
                 </a>
             </div>
 
             <div id="contact-form" class="contact-card form-card fade-in-up delay-600">
                 <div class="contact-card-header">
-                    <h3>Envoyez-nous une demande</h3>
+                    <h3>@LocalizationHelper.Get("Contact_FormTitle", HttpContext)</h3>
                     <div class="contact-divider"></div>
                 </div>
 
@@ -106,27 +107,27 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label asp-for="FirstName">Prénom</label>
-                            <input asp-for="FirstName" type="text" class="glass-input-clean" placeholder="Votre prénom">
+                            <label asp-for="FirstName">@LocalizationHelper.Get("Contact_FirstName", HttpContext)</label>
+                            <input asp-for="FirstName" type="text" class="glass-input-clean" placeholder="@LocalizationHelper.Get("Contact_FirstName", HttpContext)">
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="LastName">Nom</label>
-                            <input asp-for="LastName" type="text" class="glass-input-clean" placeholder="Votre nom">
+                            <label asp-for="LastName">@LocalizationHelper.Get("Contact_LastName", HttpContext)</label>
+                            <input asp-for="LastName" type="text" class="glass-input-clean" placeholder="@LocalizationHelper.Get("Contact_LastName", HttpContext)">
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Email">Email</label>
+                        <label asp-for="Email">@LocalizationHelper.Get("Contact_Email", HttpContext)</label>
                         <input asp-for="Email" type="email" class="glass-input-clean" placeholder="votre@email.com">
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Subject">Sujet</label>
+                        <label asp-for="Subject">@LocalizationHelper.Get("Contact_Subject", HttpContext)</label>
                         <select asp-for="Subject" class="glass-select-clean">
-                            <option value="">Sélectionnez un sujet</option>
+                            <option value="">@LocalizationHelper.Get("Contact_SubjectPlaceholder", HttpContext)</option>
                             <option value="Demande d'information">Demande d'information</option>
                             <option value="Service Après-Vente">Service Après-Vente</option>
                             <option value="Prendre Rendez-vous">Prendre Rendez-vous</option>
@@ -136,17 +137,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Message">Message</label>
-                        <textarea asp-for="Message" class="glass-input-clean" rows="5" placeholder="Comment pouvons-nous vous aider ?"></textarea>
+                        <label asp-for="Message">@LocalizationHelper.Get("Contact_Message", HttpContext)</label>
+                        <textarea asp-for="Message" class="glass-input-clean" rows="5" placeholder="@LocalizationHelper.Get("Contact_Message", HttpContext)..."></textarea>
                         <span asp-validation-for="Message" class="text-danger"></span>
                     </div>
 
                     <button type="submit" class="btn-primary-large">
-                        Envoyer le message
+                        @LocalizationHelper.Get("Contact_Send", HttpContext)
                     </button>
 
                     <div class="contact-disclaimer">
-                        Nous répondons généralement sous 24–48h ouvrées.
+                        @LocalizationHelper.Get("Contact_Disclaimer", HttpContext)
                     </div>
 
                 </form>

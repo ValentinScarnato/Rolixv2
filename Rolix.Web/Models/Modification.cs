@@ -6,6 +6,8 @@ public class Modification
     public string? ModificationName { get; set; }
     public DateTime? ModificationDate { get; set; }
     
+    public int? LanguageCode { get; set; }
+
     // Hero section
     public string? Title { get; set; }
     public string? Subtitle { get; set; }
@@ -25,7 +27,6 @@ public class Modification
     
     // Gallery
     public string? Gallery { get; set; }
-    public string? Section { get; set; }
     
     // Maison section (About content)
     public string? MaisonTitle { get; set; }
@@ -34,14 +35,6 @@ public class Modification
     public string? Paragraph2 { get; set; }
     public string? Paragraph3 { get; set; }
     public string? EditorialQuote { get; set; }
-    
-    // Statistics
-    public string? Stat1Number { get; set; }
-    public string? Stat1Label { get; set; }
-    public string? Stat2Number { get; set; }
-    public string? Stat2Label { get; set; }
-    public string? Stat3Number { get; set; }
-    public string? Stat3Label { get; set; }
     
     // Archives
     public string? ArchivesTitle { get; set; }

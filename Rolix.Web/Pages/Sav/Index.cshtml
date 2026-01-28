@@ -1,7 +1,8 @@
 @page
 @model Rolix.Web.Pages.Sav.IndexModel
+@using Rolix.Web.Helpers
 @{
-    ViewData["Title"] = "Retours SAV";
+    ViewData["Title"] = LocalizationHelper.Get("Sav_Title", HttpContext);
 }
 
 <link rel="stylesheet" href="~/css/account.css" />
@@ -17,27 +18,27 @@
         <nav class="account-menu">
             <a href="/Account" class="menu-item">
                 <i class="bi bi-person"></i>
-                <span>Mon Profil</span>
+                <span>@LocalizationHelper.Get("Account_MenuProfile", HttpContext)</span>
             </a>
             <a href="/Invoices" class="menu-item">
                 <i class="bi bi-receipt"></i>
-                <span>Mes Factures</span>
+                <span>@LocalizationHelper.Get("Account_MenuInvoices", HttpContext)</span>
             </a>
             <a href="/Sav" class="menu-item active">
                 <i class="bi bi-tools"></i>
-                <span>Retours SAV</span>
+                <span>@LocalizationHelper.Get("Account_MenuSav", HttpContext)</span>
             </a>
             <a href="/Account?handler=Logout" class="menu-item logout">
                 <i class="bi bi-box-arrow-right"></i>
-                <span>Déconnexion</span>
+                <span>@LocalizationHelper.Get("Account_MenuLogout", HttpContext)</span>
             </a>
         </nav>
     </div>
 
     <div class="account-content">
         <div class="content-header">
-            <h1>Retours SAV</h1>
-            <p class="subtitle">Gérez vos demandes de retour sous garantie</p>
+            <h1>@LocalizationHelper.Get("Sav_Title", HttpContext)</h1>
+            <p class="subtitle">@LocalizationHelper.Get("Sav_Subtitle", HttpContext)</p>
         </div>
 
         @if (TempData["SuccessMessage"] != null)
@@ -55,8 +56,8 @@
         }
 
         <div class="sav-section">
-            <h2>Nouvelle demande SAV</h2>
-            <p class="section-description">Sélectionnez un produit parmi vos achats pour effectuer une demande de retour.</p>
+            <h2>@LocalizationHelper.Get("Sav_NewRequest", HttpContext)</h2>
+            <p class="section-description">@LocalizationHelper.Get("Sav_NewRequestDesc", HttpContext)</p>
 
             @if (Model.PurchasedProducts.Any())
             {
@@ -64,10 +65,10 @@
                     <table class="rolix-table">
                         <thead>
                             <tr>
-                                <th>Date d'achat</th>
-                                <th>Produit</th>
-                                <th>Montant</th>
-                                <th>Action</th>
+                                <th>@LocalizationHelper.Get("Sav_ColPurchaseDate", HttpContext)</th>
+                                <th>@LocalizationHelper.Get("Sav_ColProduct", HttpContext)</th>
+                                <th>@LocalizationHelper.Get("Invoices_ColAmount", HttpContext)</th>
+                                <th>@LocalizationHelper.Get("Invoices_ColAction", HttpContext)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,14 +81,14 @@
                                     <td>
                                         @if (product.HasSavRequest)
                                         {
-                                            <button class="btn-disabled" disabled title="Une demande est déjà en cours pour ce produit">
-                                                <i class="bi bi-check-circle"></i> Demande en cours
+                                            <button class="btn-disabled" disabled title="@LocalizationHelper.Get("Sav_RequestInProgress", HttpContext)">
+                                                <i class="bi bi-check-circle"></i> @LocalizationHelper.Get("Sav_RequestInProgress", HttpContext)
                                             </button>
                                         }
                                         else
                                         {
                                             <button type="button" class="btn-sav-action" onclick="openSavModal('@product.ProductId', '@product.ProductName')">
-                                                <i class="bi bi-tools"></i> Demander SAV
+                                                <i class="bi bi-tools"></i> @LocalizationHelper.Get("Sav_RequestAction", HttpContext)
                                             </button>
                                         }
                                     </td>
@@ -101,7 +102,7 @@
             {
                 <div class="empty-state-small">
                     <i class="bi bi-bag-x"></i>
-                    <p>Aucun produit éligible trouvé dans vos achats.</p>
+                    <p>@LocalizationHelper.Get("Sav_EmptyPurchases", HttpContext)</p>
                 </div>
             }
         </div>
@@ -109,17 +110,17 @@
         @if (Model.SavRequests.Any())
         {
             <div class="sav-section">
-                <h2>Mes demandes SAV</h2>
+                <h2>@LocalizationHelper.Get("Sav_MyRequests", HttpContext)</h2>
                 <div class="table-wrapper">
                     <table class="rolix-table">
                         <thead>
                             <tr>
-                                <th>Numéro Ticket</th>
-                                <th>Date</th>
-                                <th>Produit</th>
-                                <th>Problème</th>
-                                <th>Statut</th>
-                                <th>Notez votre expérience</th>
+                                <th>@LocalizationHelper.Get("Sav_ColTicket", HttpContext)</th>
+                                <th>@LocalizationHelper.Get("Invoices_ColDate", HttpContext)</th>
+                                <th>@LocalizationHelper.Get("Sav_ColProduct", HttpContext)</th>
+                                <th>@LocalizationHelper.Get("Sav_ColProblem", HttpContext)</th>
+                                <th>@LocalizationHelper.Get("Sav_ColStatus", HttpContext)</th>
+                                <th>@LocalizationHelper.Get("Invoices_ColRating", HttpContext)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -143,13 +144,13 @@
                                             @if (request.CustomerRating.HasValue)
                                             {
                                                 <div class="rating-display" style="cursor: default;">
-                                                    <span class="star-text">@request.CustomerRating/5</span> <i class="bi bi-check-circle-fill" style="color: #ffc107; margin-left: 5px;"></i> Merci !
+                                                    <span class="star-text">@request.CustomerRating/5</span> <i class="bi bi-check-circle-fill" style="color: #ffc107; margin-left: 5px;"></i> @LocalizationHelper.Get("Invoices_ThankYou", HttpContext)
                                                 </div>
                                             }
                                             else
                                             {
                                                 <button class="btn-rate" onclick="openRatingModal('@request.Id', 0)">
-                                                    <i class="bi bi-star"></i> Noter
+                                                    <i class="bi bi-star"></i> @LocalizationHelper.Get("Sav_Rate", HttpContext)
                                                 </button>
                                             }
                                         }
@@ -170,11 +171,11 @@
 <div id="ratingModal" class="modal-overlay">
     <div class="modal-content small-modal">
         <div class="modal-header">
-            <h3>Noter le service</h3>
+            <h3>@LocalizationHelper.Get("Sav_RatingModalTitle", HttpContext)</h3>
             <button type="button" class="close-modal" onclick="closeRatingModal()">×</button>
         </div>
         <div class="rating-modal-body">
-            <p>Quelle note donnez-vous à notre service SAV ?</p>
+            <p>@LocalizationHelper.Get("Sav_RatingQuestion", HttpContext)</p>
             <div class="rating-numbers-large">
                 @for (int i = 1; i <= 5; i++)
                 {
@@ -186,7 +187,7 @@
             <input type="hidden" name="id" id="modalRatingId" />
             <input type="hidden" name="rating" id="modalRatingValue" />
             <div class="modal-actions centered">
-                 <button type="submit" class="btn-primary-small" disabled id="btnSubmitRating">Envoyer</button>
+                 <button type="submit" class="btn-primary-small" disabled id="btnSubmitRating">@LocalizationHelper.Get("Contact_Send", HttpContext)</button>
             </div>
         </form>
     </div>
@@ -202,22 +203,22 @@
 <div id="savModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Demande SAV : <span id="modalProductName"></span></h3>
+            <h3>@LocalizationHelper.Get("Sav_ModalTitle", HttpContext) : <span id="modalProductName"></span></h3>
             <button type="button" class="close-modal" onclick="closeSavModal()">×</button>
         </div>
         <form method="post" class="sav-form">
             <input type="hidden" asp-for="ProductId" id="modalProductId" />
             
             <div class="form-group">
-                <label asp-for="Diagnostic">Description du problème</label>
-                <textarea asp-for="Diagnostic" class="glass-input-clean" rows="5" placeholder="Décrivez le problème rencontré avec votre montre..." required></textarea>
+                <label asp-for="Diagnostic">@LocalizationHelper.Get("Sav_ModalProblem", HttpContext)</label>
+                <textarea asp-for="Diagnostic" class="glass-input-clean" rows="5" placeholder="@LocalizationHelper.Get("Sav_ModalProblem", HttpContext)..." required></textarea>
                 <span asp-validation-for="Diagnostic" class="text-danger"></span>
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="btn-secondary" onclick="closeSavModal()">Annuler</button>
+                <button type="button" class="btn-secondary" onclick="closeSavModal()">@LocalizationHelper.Get("Sav_ModalCancel", HttpContext)</button>
                 <button type="submit" class="btn-primary-large">
-                    <i class="bi bi-send"></i> Envoyer la demande
+                    <i class="bi bi-send"></i> @LocalizationHelper.Get("Sav_ModalSend", HttpContext)
                 </button>
             </div>
         </form>

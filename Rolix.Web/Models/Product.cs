@@ -8,6 +8,7 @@ public class Product
     public decimal Price { get; set; }
 
     public string? Description { get; set; }
+    public string? DescriptionEn { get; set; } // rlx_description_en
 
     public string? ImageBase64 { get; set; }
 

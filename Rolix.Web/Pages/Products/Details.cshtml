@@ -1,7 +1,9 @@
 @page
 @model Rolix.Web.Pages.Products.DetailsModel
+@using Rolix.Web.Helpers
 @{
     ViewData["Title"] = Model.Product?.Name;
+    var currency = HttpContext.Session.GetString(Rolix.Web.Models.SessionKeys.Currency) ?? "CHF";
 }
 
 <div class="ambient-light light-1" style="top: -20%; left: 20%; width: 600px; height: 600px; opacity: 0.4;"></div>
@@ -25,7 +27,7 @@
             <div class="product-image-wrapper">
 
                 <a asp-page="/Products/Index" class="btn-back-catalog">
-                    &larr; Retour au catalogue
+                    &larr; @LocalizationHelper.Get("Common_BackToCatalog", HttpContext)
                 </a>
 
                 <div class="watch-glow"></div>
@@ -46,23 +48,23 @@
                 <div class="specs-grid fade-in-up delay-600">
                     <div class="spec-item">
                         <span class="spec-icon">⌀</span>
-                        <span class="spec-label">Diamètre</span>
+                        <span class="spec-label">@LocalizationHelper.Get("Product_Diameter", HttpContext)</span>
                         <span class="spec-value">@Model.Product.Dimensions mm</span>
                     </div>
                     <div class="spec-item">
                         <span class="spec-icon">◆</span>
-                        <span class="spec-label">Matériau</span>
+                        <span class="spec-label">@LocalizationHelper.Get("Product_Material", HttpContext)</span>
                         <span class="spec-value">@Model.Product.Materiaux</span>
                     </div>
                     <div class="spec-item">
                         <span class="spec-icon">⚙</span>
-                        <span class="spec-label">Mouvement</span>
+                        <span class="spec-label">@LocalizationHelper.Get("Product_Movement", HttpContext)</span>
                         <span class="spec-value">@Model.Product.Mouvement</span>
                     </div>
                     <div class="spec-item">
                         <span class="spec-icon">💧</span>
-                        <span class="spec-label">Étanchéité</span>
-                        <span class="spec-value">@Model.Product.Etancheite mètres</span>
+                        <span class="spec-label">@LocalizationHelper.Get("Product_WaterResistance", HttpContext)</span>
+                        <span class="spec-value">@Model.Product.Etancheite m</span>
                     </div>
                 </div>
             </div>
@@ -75,19 +77,26 @@
 
                     <div class="price-wrapper">
                         <span class="price">
-                            @Model.Product.Price.ToString("C0", System.Globalization.CultureInfo.CreateSpecificCulture("fr-CH"))
+                            @CurrencyHelper.FormatPrice(Model.Product.Price, currency)
                         </span>
-                        <span class="tax-label">TVA incluse</span>
+                        <span class="tax-label">@LocalizationHelper.Get("Common_VATIncluded", HttpContext)</span>
                     </div>
                 </div>
 
                 <div class="separator-line fade-in-up delay-400"></div>
 
                 <div class="description-block fade-in-up delay-400">
-                    @if (!string.IsNullOrEmpty(Model.Product.Description))
+                    @{
+                        var langCode = HttpContext.Session.GetString(Rolix.Web.Models.SessionKeys.Language) ?? "fr";
+                        var description = (langCode == "en" && !string.IsNullOrEmpty(Model.Product.DescriptionEn)) 
+                                        ? Model.Product.DescriptionEn 
+                                        : Model.Product.Description;
+                    }
+
+                    @if (!string.IsNullOrEmpty(description))
                     {
-                        <h3>L'Esprit du Modèle</h3>
-                        <p class="description">@Model.Product.Description</p>
+                        <h3>@LocalizationHelper.Get("Product_ModelSpirit", HttpContext)</h3>
+                        <p class="description">@description</p>
                     }
                     else
                     {
@@ -104,16 +113,16 @@
                         @if (Model.HasPendingQuote)
                         {
                             <button type="button" class="btn-primary-large" disabled>
-                                Demande envoyée
+                                @LocalizationHelper.Get("Product_QuoteSent", HttpContext)
                             </button>
                         }
                         else
                         {
                             <button type="button" class="btn-primary-large" id="open-quote-modal">
-                                Demander un devis
+                                @LocalizationHelper.Get("Product_RequestQuote", HttpContext)
                             </button>
                             <button type="submit" class="btn-primary-large" id="submit-quote" style="display:none;">
-                                Demander un devis
+                                @LocalizationHelper.Get("Product_RequestQuote", HttpContext)
                             </button>
                         }
                     </form>
@@ -121,11 +130,11 @@
                     <div class="trust-signals">
                         <div class="trust-item">
                             <span class="trust-icon">✦</span>
-                            <span>Garantie 5 ans</span>
+                            <span>@LocalizationHelper.Get("Product_Guarantee5Years", HttpContext)</span>
                         </div>
                         <div class="trust-item">
                             <span class="trust-icon">✦</span>
-                            <span>Livraison Sécurisée</span>
+                            <span>@LocalizationHelper.Get("Product_SecureDelivery", HttpContext)</span>
                         </div>
                     </div>
                 </div>
@@ -188,7 +197,7 @@
 else
 {
     <div style="text-align: center; margin-top: 100px; color: white;">
-        <h2>Produit introuvable.</h2>
-        <a asp-page="/Products/Index" class="btn-primary" style="margin-top: 20px;">Retour à la collection</a>
+        <h2>@LocalizationHelper.Get("Product_NotFound", HttpContext)</h2>
+        <a asp-page="/Products/Index" class="btn-primary" style="margin-top: 20px;">@LocalizationHelper.Get("Product_BackToCollection", HttpContext)</a>
     </div>
 }

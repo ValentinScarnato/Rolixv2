@@ -55,7 +55,7 @@ namespace Rolix.Web.Pages
 
         // Maison section (About content)
         [BindProperty]
-        public string MaisonTitle { get; set; } = "Nous ne fabriquons pas le temps. Nous l'honorons.";
+        public string MaisonTitle { get; set; } = "Nous ne fabriquons pas <br> le temps. <span class=\"text-gold\">Nous l'honorons.</span>";
 
         [BindProperty]
         public string MaisonBadge { get; set; } = "Depuis 1905";
@@ -72,25 +72,6 @@ namespace Rolix.Web.Pages
         [BindProperty]
         public string EditorialQuote { get; set; } = "Le luxe, c'est ce qui ne se voit pas, mais qui se ressent à chaque instant.";
 
-        // Statistics
-        [BindProperty]
-        public string Stat1Number { get; set; } = "118";
-
-        [BindProperty]
-        public string Stat1Label { get; set; } = "Années d'Histoire";
-
-        [BindProperty]
-        public string Stat2Number { get; set; } = "450";
-
-        [BindProperty]
-        public string Stat2Label { get; set; } = "Artisans Maîtres";
-
-        [BindProperty]
-        public string Stat3Number { get; set; } = "100%";
-
-        [BindProperty]
-        public string Stat3Label { get; set; } = "Swiss Made";
-
         // Archives
         [BindProperty]
         public string ArchivesTitle { get; set; } = "Les Archives";
@@ -104,9 +85,6 @@ namespace Rolix.Web.Pages
         [BindProperty]
         public string Archive3Text { get; set; } = "1980 — La main de l'homme";
 
-        [BindProperty]
-        public string ModificationName { get; set; } = string.Empty;
-
         public void OnGet()
         {
             TopProducts = _productService.GetTopExpensiveProducts(3);
@@ -114,7 +92,10 @@ namespace Rolix.Web.Pages
             // Load latest modification or use defaults
             try
             {
-                var latestMod = _modificationService.GetLatestModification();
+                var language = HttpContext.Session.GetString(SessionKeys.Language) ?? "fr";
+                var languageCode = language == "en" ? 2 : 1;
+                
+                var latestMod = _modificationService.GetLatestModification(languageCode);
                 if (latestMod != null)
                 {
                     // Hero section
@@ -144,14 +125,6 @@ namespace Rolix.Web.Pages
                     Paragraph3 = latestMod.Paragraph3 ?? Paragraph3;
                     EditorialQuote = latestMod.EditorialQuote ?? EditorialQuote;
                     
-                    // Statistics
-                    Stat1Number = latestMod.Stat1Number ?? Stat1Number;
-                    Stat1Label = latestMod.Stat1Label ?? Stat1Label;
-                    Stat2Number = latestMod.Stat2Number ?? Stat2Number;
-                    Stat2Label = latestMod.Stat2Label ?? Stat2Label;
-                    Stat3Number = latestMod.Stat3Number ?? Stat3Number;
-                    Stat3Label = latestMod.Stat3Label ?? Stat3Label;
-                    
                     // Archives
                     ArchivesTitle = latestMod.ArchivesTitle ?? ArchivesTitle;
                     Archive1Text = latestMod.Archive1Text ?? Archive1Text;
@@ -173,18 +146,10 @@ namespace Rolix.Web.Pages
                 return Forbid();
             }
 
-            if (string.IsNullOrWhiteSpace(ModificationName))
-            {
-                ModelState.AddModelError(string.Empty, "Le nom de modification est requis.");
-                return Page();
-            }
-
             try
             {
                 var modification = new Modification
                 {
-                    ModificationName = ModificationName,
-                    
                     // Hero section
                     Title = Title,
                     Subtitle = Subtitle,
@@ -212,14 +177,6 @@ namespace Rolix.Web.Pages
                     Paragraph3 = Paragraph3,
                     EditorialQuote = EditorialQuote,
                     
-                    // Statistics
-                    Stat1Number = Stat1Number,
-                    Stat1Label = Stat1Label,
-                    Stat2Number = Stat2Number,
-                    Stat2Label = Stat2Label,
-                    Stat3Number = Stat3Number,
-                    Stat3Label = Stat3Label,
-                    
                     // Archives
                     ArchivesTitle = ArchivesTitle,
                     Archive1Text = Archive1Text,
@@ -227,14 +184,22 @@ namespace Rolix.Web.Pages
                     Archive3Text = Archive3Text
                 };
 
-                _modificationService.SaveModification(modification);
+                var language = HttpContext.Session.GetString(SessionKeys.Language) ?? "fr";
+                var languageCode = language == "en" ? 2 : 1;
+
+                _modificationService.SaveModification(modification, languageCode);
 
                 TempData["Success"] = "Modifications enregistrées avec succès.";
                 return RedirectToPage();
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Erreur lors de l'enregistrement : {ex.Message}");
+                var errorMessage = $"Erreur lors de l'enregistrement : {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $" | Détails: {ex.InnerException.Message}";
+                }
+                ModelState.AddModelError(string.Empty, errorMessage);
                 TopProducts = _productService.GetTopExpensiveProducts(3);
                 return Page();
             }

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" msdata:Ordinal="5" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Navigation -->
+  <data name="Nav_Home" xml:space="preserve">
+    <value>Accueil</value>
+  </data>
+  <data name="Nav_Collection" xml:space="preserve">
+    <value>Collection</value>
+  </data>
+  <data name="Nav_Maison" xml:space="preserve">
+    <value>Maison</value>
+  </data>
+  <data name="Nav_Contact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="Nav_MyAccount" xml:space="preserve">
+    <value>Mon Compte</value>
+  </data>
+  <data name="Nav_Hello" xml:space="preserve">
+    <value>Bonjour</value>
+  </data>
+  
+  <!-- Common -->
+  <data name="Common_Discover" xml:space="preserve">
+    <value>Découvrir</value>
+  </data>
+  <data name="Common_ExploreModel" xml:space="preserve">
+    <value>Explorer ce modèle</value>
+  </data>
+  <data name="Common_BackToCatalog" xml:space="preserve">
+    <value>Retour au catalogue</value>
+  </data>
+  <data name="Common_VATIncluded" xml:space="preserve">
+    <value>TVA incluse</value>
+  </data>
+  
+  <!-- Products -->
+  <data name="Products_Search" xml:space="preserve">
+    <value>Rechercher un modèle...</value>
+  </data>
+  <data name="Products_AllCollections" xml:space="preserve">
+    <value>Toutes les collections</value>
+  </data>
+  <data name="Products_SortNameAsc" xml:space="preserve">
+    <value>Nom (A-Z)</value>
+  </data>
+  <data name="Products_SortPriceAsc" xml:space="preserve">
+    <value>Prix croissant</value>
+  </data>
+  <data name="Products_SortPriceDesc" xml:space="preserve">
+    <value>Prix décroissant</value>
+  </data>
+  <data name="Products_NoResults" xml:space="preserve">
+    <value>Aucun modèle trouvé</value>
+  </data>
+  <data name="Products_NoResultsDesc" xml:space="preserve">
+    <value>Essayez de modifier vos critères de recherche.</value>
+  </data>
+  <data name="Products_ResetCatalog" xml:space="preserve">
+    <value>Réinitialiser le catalogue</value>
+  </data>
+  
+  <!-- Product Details -->
+  <data name="Product_RequestQuote" xml:space="preserve">
+    <value>Demander un devis</value>
+  </data>
+  <data name="Product_QuoteSent" xml:space="preserve">
+    <value>Demande envoyée</value>
+  </data>
+  <data name="Product_Guarantee5Years" xml:space="preserve">
+    <value>Garantie 5 ans</value>
+  </data>
+  <data name="Product_SecureDelivery" xml:space="preserve">
+    <value>Livraison Sécurisée</value>
+  </data>
+  <data name="Product_NotFound" xml:space="preserve">
+    <value>Produit introuvable.</value>
+  </data>
+  <data name="Product_BackToCollection" xml:space="preserve">
+    <value>Retour à la collection</value>
+  </data>
+  
+  <!-- Currency -->
+  <data name="Currency_CHF" xml:space="preserve">
+    <value>CHF - Franc Suisse</value>
+  </data>
+  <data name="Currency_EUR" xml:space="preserve">
+    <value>EUR - Euro</value>
+  </data>
+  
+  <!-- Added Keys -->
+  <data name="Common_ImageUnavailable" xml:space="preserve">
+    <value>Image indisponible</value>
+  </data>
+  <data name="Common_Edit" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="Home_StatHistory" xml:space="preserve">
+    <value>Années d'Histoire</value>
+  </data>
+  <data name="Home_StatArtisans" xml:space="preserve">
+    <value>Artisans Maîtres</value>
+  </data>
+  <data name="Home_StatSwiss" xml:space="preserve">
+    <value>Swiss Made</value>
+  </data>
+  <data name="Home_ViewCollection" xml:space="preserve"><value>Voir la collection</value></data>
+  <data name="Home_DiscoverCollection" xml:space="preserve"><value>Découvrir toute la collection</value></data>
+  <data name="Home_OurHistory" xml:space="preserve"><value>Notre histoire</value></data>
+  <data name="Home_HauteHorlogerie" xml:space="preserve"><value>Haute Horlogerie</value></data>
+  <data name="Footer_Slogan" xml:space="preserve">
+    <value>L'excellence suisse.</value>
+  </data>
+  <data name="Footer_Men" xml:space="preserve">
+    <value>Hommes</value>
+  </data>
+  <data name="Footer_Women" xml:space="preserve">
+    <value>Femmes</value>
+  </data>
+  <data name="Footer_LimitedEditions" xml:space="preserve">
+    <value>Éditions Limitées</value>
+  </data>
+  <data name="Footer_OurHistory" xml:space="preserve">
+    <value>Notre Histoire</value>
+  </data>
+  <data name="Footer_KnowHow" xml:space="preserve">
+    <value>Savoir-faire</value>
+  </data>
+  <data name="Footer_Careers" xml:space="preserve">
+    <value>Carrières</value>
+  </data>
+
+  <!-- Contact -->
+  <data name="Contact_Title" xml:space="preserve"><value>Service Clientèle</value></data>
+  <data name="Contact_HeroTitle" xml:space="preserve"><value>Nous Contacter</value></data>
+  <data name="Contact_HeroSubtitle" xml:space="preserve"><value>Nos ambassadeurs vous accompagnent avec discrétion, précision et exigence — pour l’acquisition, l’entretien et le suivi de votre garde-temps.</value></data>
+  <data name="Contact_EmailAction" xml:space="preserve"><value>Écrire au service</value></data>
+  <data name="Contact_FormAction" xml:space="preserve"><value>Envoyer une demande</value></data>
+  <data name="Contact_StoreTitle" xml:space="preserve"><value>La Boutique</value></data>
+  <data name="Contact_Phone" xml:space="preserve"><value>Téléphone</value></data>
+  <data name="Contact_Service" xml:space="preserve"><value>Service Client</value></data>
+  <data name="Contact_FormTitle" xml:space="preserve"><value>Envoyez-nous une demande</value></data>
+  <data name="Contact_FirstName" xml:space="preserve"><value>Prénom</value></data>
+  <data name="Contact_LastName" xml:space="preserve"><value>Nom</value></data>
+  <data name="Contact_Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Contact_Subject" xml:space="preserve"><value>Sujet</value></data>
+  <data name="Contact_SubjectPlaceholder" xml:space="preserve"><value>Sélectionnez un sujet</value></data>
+  <data name="Contact_Message" xml:space="preserve"><value>Message</value></data>
+  <data name="Contact_Send" xml:space="preserve"><value>Envoyer le message</value></data>
+  <data name="Contact_Disclaimer" xml:space="preserve"><value>Nous répondons généralement sous 24–48h ouvrées.</value></data>
+  <data name="Contact_PrivateAppointment" xml:space="preserve"><value>Rendez-vous privé</value></data>
+  <data name="Contact_PrivateAppointmentDesc" xml:space="preserve"><value>Sur demande — confidentialité et accueil dédié</value></data>
+  <data name="Contact_ViewOnMap" xml:space="preserve"><value>Voir sur la carte</value></data>
+
+  <!-- Account -->
+  <data name="Account_PageTitle" xml:space="preserve"><value>Espace Client</value></data>
+  <data name="Account_LoginTitle" xml:space="preserve"><value>Mon Compte</value></data>
+  <data name="Account_LoginSubtitle" xml:space="preserve"><value>Accédez à votre espace client</value></data>
+  <data name="Account_LoginHeader" xml:space="preserve"><value>Connexion</value></data>
+  <data name="Account_LoginDesc" xml:space="preserve"><value>Accédez à votre compte</value></data>
+  <data name="Account_Username" xml:space="preserve"><value>Identifiant (Nom d'utilisateur)</value></data>
+  <data name="Account_Password" xml:space="preserve"><value>Mot de passe</value></data>
+  <data name="Account_LoginBtn" xml:space="preserve"><value>Se connecter</value></data>
+  <data name="Account_RegisterHeader" xml:space="preserve"><value>Nouveau Client ?</value></data>
+  <data name="Account_RegisterDesc" xml:space="preserve"><value>Créez un compte pour bénéficier de nos services exclusifs</value></data>
+  <data name="Account_FullName" xml:space="preserve"><value>Nom Complet</value></data>
+  <data name="Account_RegisterUsername" xml:space="preserve"><value>Identifiant souhaité</value></data>
+  <data name="Account_RegisterBtn" xml:space="preserve"><value>Créer mon compte</value></data>
+  <data name="Account_ProfileTitle" xml:space="preserve"><value>Mon Profil</value></data>
+  <data name="Account_ProfileSubtitle" xml:space="preserve"><value>Gérez vos informations personnelles</value></data>
+  <data name="Account_IdentifiedAs" xml:space="preserve"><value>Identifié en tant que</value></data>
+  <data name="Account_MenuProfile" xml:space="preserve"><value>Mon Profil</value></data>
+  <data name="Account_MenuInvoices" xml:space="preserve"><value>Mes Factures</value></data>
+  <data name="Account_MenuSav" xml:space="preserve"><value>Retours SAV</value></data>
+  <data name="Account_MenuLogout" xml:space="preserve"><value>Déconnexion</value></data>
+  <data name="Account_MemberBadge" xml:space="preserve"><value>Membre Privilège</value></data>
+  <data name="Account_MyInfo" xml:space="preserve"><value>Mes Informations</value></data>
+  <data name="Account_UpdateInfo" xml:space="preserve"><value>Mettez à jour vos coordonnées</value></data>
+  <data name="Account_ProfessionalEmail" xml:space="preserve"><value>Email Professionnel</value></data>
+  <data name="Account_SaveChanges" xml:space="preserve"><value>Enregistrer les modifications</value></data>
+  <data name="Account_MenuLogout" xml:space="preserve"><value>Déconnexion</value></data>
+  <data name="Account_QuickInvoices" xml:space="preserve"><value>Factures</value></data>
+  <data name="Account_QuickInvoicesDesc" xml:space="preserve"><value>Consultez et téléchargez vos factures</value></data>
+  <data name="Account_QuickInvoicesLink" xml:space="preserve"><value>Voir mes factures</value></data>
+  <data name="Account_QuickSav" xml:space="preserve"><value>Retours SAV</value></data>
+  <data name="Account_QuickSavDesc" xml:space="preserve"><value>Gérez vos demandes de retour sous garantie</value></data>
+  <data name="Account_QuickSavLink" xml:space="preserve"><value>Mes retours SAV</value></data>
+
+  <!-- Invoices -->
+  <data name="Invoices_Title" xml:space="preserve"><value>Mes Factures</value></data>
+  <data name="Invoices_Subtitle" xml:space="preserve"><value>Consultez et téléchargez vos factures</value></data>
+  <data name="Invoices_Empty" xml:space="preserve"><value>Aucune facture trouvée pour le moment.</value></data>
+  <data name="Invoices_ColNumber" xml:space="preserve"><value>Numéro</value></data>
+  <data name="Invoices_ColDate" xml:space="preserve"><value>Date</value></data>
+  <data name="Invoices_ColAmount" xml:space="preserve"><value>Montant</value></data>
+  <data name="Invoices_ColRating" xml:space="preserve"><value>Notez votre expérience</value></data>
+  <data name="Invoices_ColAction" xml:space="preserve"><value>Action</value></data>
+  <data name="Invoices_Download" xml:space="preserve"><value>Télécharger PDF</value></data>
+  <data name="Invoices_ThankYou" xml:space="preserve"><value>Merci !</value></data>
+
+  <!-- SAV -->
+  <data name="Sav_Title" xml:space="preserve"><value>Retours SAV</value></data>
+  <data name="Sav_Subtitle" xml:space="preserve"><value>Gérez vos demandes de retour sous garantie</value></data>
+  <data name="Sav_NewRequest" xml:space="preserve"><value>Nouvelle demande SAV</value></data>
+  <data name="Sav_NewRequestDesc" xml:space="preserve"><value>Sélectionnez un produit parmi vos achats pour effectuer une demande de retour.</value></data>
+  <data name="Sav_ColPurchaseDate" xml:space="preserve"><value>Date d'achat</value></data>
+  <data name="Sav_ColProduct" xml:space="preserve"><value>Produit</value></data>
+  <data name="Sav_RequestInProgress" xml:space="preserve"><value>Demande en cours</value></data>
+  <data name="Sav_RequestAction" xml:space="preserve"><value>Demander SAV</value></data>
+  <data name="Sav_EmptyPurchases" xml:space="preserve"><value>Aucun produit éligible trouvé dans vos achats.</value></data>
+  <data name="Sav_MyRequests" xml:space="preserve"><value>Mes demandes SAV</value></data>
+  <data name="Sav_ColTicket" xml:space="preserve"><value>Numéro Ticket</value></data>
+  <data name="Sav_ColProblem" xml:space="preserve"><value>Problème</value></data>
+  <data name="Sav_ColStatus" xml:space="preserve"><value>Statut</value></data>
+  <data name="Sav_Rate" xml:space="preserve"><value>Noter</value></data>
+  <data name="Sav_ModalTitle" xml:space="preserve"><value>Demande SAV</value></data>
+  <data name="Sav_ModalProblem" xml:space="preserve"><value>Description du problème</value></data>
+  <data name="Sav_ModalCancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Sav_ModalSend" xml:space="preserve"><value>Envoyer la demande</value></data>
+
+  <!-- Products -->
+  <data name="Products_PageTitle" xml:space="preserve"><value>Nos Garde-Temps</value></data>
+  <data name="Products_PageSubtitle" xml:space="preserve"><value>L'alliance parfaite de l'ingénierie et de l'émotion.</value></data>
+  <data name="Product_Diameter" xml:space="preserve"><value>Diamètre</value></data>
+  <data name="Product_Material" xml:space="preserve"><value>Matériau</value></data>
+  <data name="Product_Movement" xml:space="preserve"><value>Mouvement</value></data>
+  <data name="Product_WaterResistance" xml:space="preserve"><value>Étanchéité</value></data>
+  <data name="Product_ModelSpirit" xml:space="preserve"><value>L'Esprit du Modèle</value></data>
+  <data name="Sav_RatingModalTitle" xml:space="preserve"><value>Noter le service</value></data>
+  <data name="Sav_RatingQuestion" xml:space="preserve"><value>Quelle note donnez-vous à notre service SAV ?</value></data>
+</root>

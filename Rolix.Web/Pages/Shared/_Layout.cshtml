@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Http
 @using Rolix.Web.Models
+@using Rolix.Web.Helpers
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -23,17 +24,60 @@
             </a>
 
             <nav class="rolix-nav">
-                <a asp-page="/Index">Accueil</a>
-                <a asp-page="/Products/Index">Collection</a>
-                <a href="/#maison">Maison</a>
-                <a asp-page="/Contact">Contact</a>
+                <a asp-page="/Index">@LocalizationHelper.Get("Nav_Home", Context)</a>
+                <a asp-page="/Products/Index">@LocalizationHelper.Get("Nav_Collection", Context)</a>
+                <a href="/#maison">@LocalizationHelper.Get("Nav_Maison", Context)</a>
+                <a asp-page="/Contact">@LocalizationHelper.Get("Nav_Contact", Context)</a>
 
                 @{
                     var contactName = Context.Session.GetString(SessionKeys.ContactName);
+                    var currency = Context.Session.GetString(SessionKeys.Currency) ?? "CHF";
+                    var language = Context.Session.GetString(SessionKeys.Language) ?? "fr";
+                    var returnUrl = Context.Request.Path + Context.Request.QueryString;
                 }
 
+                <div class="currency-selector">
+                    <button class="currency-btn" id="currencyBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                            <path d="M2 12h20"></path>
+                        </svg>
+                        <span>@currency</span>
+                    </button>
+                    <div class="currency-dropdown" id="currencyDropdown">
+                        <a href="/SetCurrency?currency=CHF&returnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)">@LocalizationHelper.Get("Currency_CHF", Context)</a>
+                        <a href="/SetCurrency?currency=EUR&returnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)">@LocalizationHelper.Get("Currency_EUR", Context)</a>
+                    </div>
+                </div>
+
+                <div class="language-selector">
+                    <button class="language-btn" id="languageBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 8l6 6"></path>
+                            <path d="M4 14l6-6 2-3"></path>
+                            <path d="M2 5h12"></path>
+                            <path d="M7 2h1"></path>
+                            <path d="M22 22l-5-10-5 10"></path>
+                            <path d="M14 18h6"></path>
+                        </svg>
+                        <span>@(language.ToUpper())</span>
+                    </button>
+                    <div class="language-dropdown" id="languageDropdown">
+                        <a href="/SetLanguage?language=fr&returnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)">🇫🇷 Français</a>
+                        <a href="/SetLanguage?language=en&returnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)">🇬🇧 English</a>
+                    </div>
+                </div>
+
                 <a asp-page="/Account/Index" class="nav-cta">
-                    @(string.IsNullOrEmpty(contactName) ? "Mon Compte" : $"Bonjour, {contactName}")
+                    @if (string.IsNullOrEmpty(contactName))
+                    {
+                        @LocalizationHelper.Get("Nav_MyAccount", Context)
+                    }
+                    else
+                    {
+                        @($"{LocalizationHelper.Get("Nav_Hello", Context)}, {contactName}")
+                    }
                 </a>
             </nav>
         </div>
@@ -47,19 +91,19 @@
         <div class="rolix-footer-inner">
             <div class="footer-brand">
                 <h3 style="margin-bottom:10px;">ROLIX</h3>
-                <p>&copy; 2025 Rolix Watches. <br>L'excellence suisse.</p>
+                <p>&copy; 2025 Rolix Watches. <br>@LocalizationHelper.Get("Footer_Slogan", Context)</p>
             </div>
             <div class="footer-links">
-                <h5>Collection</h5>
-                <a href="#">Hommes</a>
-                <a href="#">Femmes</a>
-                <a href="#">Éditions Limitées</a>
+                <h5>@LocalizationHelper.Get("Nav_Collection", Context)</h5>
+                <a href="#">@LocalizationHelper.Get("Footer_Men", Context)</a>
+                <a href="#">@LocalizationHelper.Get("Footer_Women", Context)</a>
+                <a href="#">@LocalizationHelper.Get("Footer_LimitedEditions", Context)</a>
             </div>
             <div class="footer-links">
-                <h5>Maison</h5>
-                <a href="#">Notre Histoire</a>
-                <a href="#">Savoir-faire</a>
-                <a href="#">Carrières</a>
+                <h5>@LocalizationHelper.Get("Nav_Maison", Context)</h5>
+                <a href="#">@LocalizationHelper.Get("Footer_OurHistory", Context)</a>
+                <a href="#">@LocalizationHelper.Get("Footer_KnowHow", Context)</a>
+                <a href="#">@LocalizationHelper.Get("Footer_Careers", Context)</a>
             </div>
         </div>
     </footer>
@@ -67,6 +111,47 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Currency dropdown toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const currencyBtn = document.getElementById('currencyBtn');
+            const currencyDropdown = document.getElementById('currencyDropdown');
+            
+            if (currencyBtn && currencyDropdown) {
+                currencyBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    currencyDropdown.classList.toggle('show');
+                    // Close language dropdown if open
+                    const langDropdown = document.getElementById('languageDropdown');
+                    if (langDropdown) langDropdown.classList.remove('show');
+                });
+                
+                // Close when clicking outside
+                document.addEventListener('click', function() {
+                    currencyDropdown.classList.remove('show');
+                });
+            }
+            
+            // Language dropdown toggle
+            const languageBtn = document.getElementById('languageBtn');
+            const languageDropdown = document.getElementById('languageDropdown');
+            
+            if (languageBtn && languageDropdown) {
+                languageBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    languageDropdown.classList.toggle('show');
+                    // Close currency dropdown if open
+                    if (currencyDropdown) currencyDropdown.classList.remove('show');
+                });
+                
+                // Close when clicking outside
+                document.addEventListener('click', function() {
+                    languageDropdown.classList.remove('show');
+                });
+            }
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -1,7 +1,8 @@
 @page
 @model Rolix.Web.Pages.Invoices.IndexModel
+@using Rolix.Web.Helpers
 @{
-    ViewData["Title"] = "Mes factures";
+    ViewData["Title"] = LocalizationHelper.Get("Invoices_Title", HttpContext);
 }
 
 <link rel="stylesheet" href="~/css/account.css" />
@@ -17,34 +18,34 @@
         <nav class="account-menu">
             <a href="/Account" class="menu-item">
                 <i class="bi bi-person"></i>
-                <span>Mon Profil</span>
+                <span>@LocalizationHelper.Get("Account_MenuProfile", HttpContext)</span>
             </a>
             <a href="/Invoices" class="menu-item active">
                 <i class="bi bi-receipt"></i>
-                <span>Mes Factures</span>
+                <span>@LocalizationHelper.Get("Account_MenuInvoices", HttpContext)</span>
             </a>
             <a href="/Sav" class="menu-item">
                 <i class="bi bi-tools"></i>
-                <span>Retours SAV</span>
+                <span>@LocalizationHelper.Get("Account_MenuSav", HttpContext)</span>
             </a>
             <a href="/Account?handler=Logout" class="menu-item logout">
                 <i class="bi bi-box-arrow-right"></i>
-                <span>Déconnexion</span>
+                <span>@LocalizationHelper.Get("Account_MenuLogout", HttpContext)</span>
             </a>
         </nav>
     </div>
 
     <div class="account-content">
         <div class="content-header">
-            <h1>Mes Factures</h1>
-            <p class="subtitle">Consultez et téléchargez vos factures</p>
+            <h1>@LocalizationHelper.Get("Invoices_Title", HttpContext)</h1>
+            <p class="subtitle">@LocalizationHelper.Get("Invoices_Subtitle", HttpContext)</p>
         </div>
 
         @if (Model.Invoices.Count == 0)
         {
             <div class="empty-state">
                 <i class="bi bi-receipt" style="font-size: 3rem; color: rgba(255,255,255,0.3); margin-bottom: 1rem;"></i>
-                <p style="color: rgba(255,255,255,0.6); font-size: 1.1rem;">Aucune facture trouvée pour le moment.</p>
+                <p style="color: rgba(255,255,255,0.6); font-size: 1.1rem;">@LocalizationHelper.Get("Invoices_Empty", HttpContext)</p>
             </div>
         }
         else
@@ -53,11 +54,11 @@
                 <table class="invoices-table">
                     <thead>
                         <tr>
-                            <th>Numéro</th>
-                            <th>Date</th>
-                            <th>Montant</th>
-                            <th>Notez votre expérience</th>
-                            <th>Action</th>
+                            <th>@LocalizationHelper.Get("Invoices_ColNumber", HttpContext)</th>
+                            <th>@LocalizationHelper.Get("Invoices_ColDate", HttpContext)</th>
+                            <th>@LocalizationHelper.Get("Invoices_ColAmount", HttpContext)</th>
+                            <th>@LocalizationHelper.Get("Invoices_ColRating", HttpContext)</th>
+                            <th>@LocalizationHelper.Get("Invoices_ColAction", HttpContext)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,7 +72,7 @@
                                     @if (invoice.CustomerRating.HasValue)
                                     {
                                         <div class="rating-thank-you">
-                                            <span class="rating-val">@invoice.CustomerRating/5</span> <i class="bi bi-check-circle-fill"></i> Merci !
+                                            <span class="rating-val">@invoice.CustomerRating/5</span> <i class="bi bi-check-circle-fill"></i> @LocalizationHelper.Get("Invoices_ThankYou", HttpContext)
                                         </div>
                                     }
                                     else
@@ -89,7 +90,7 @@
                                        asp-route-id="@invoice.Id"
                                        target="_blank"
                                        class="btn-download">
-                                        <i class="bi bi-download"></i> Télécharger PDF
+                                        <i class="bi bi-download"></i> @LocalizationHelper.Get("Invoices_Download", HttpContext)
                                     </a>
                                 </td>
                             </tr>

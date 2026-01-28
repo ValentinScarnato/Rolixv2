@@ -109,6 +109,8 @@ public class ProductService
                 "productid",
                 "name",
                 "description",
+                "description",
+                "rlx_description_en",
                 "entityimage",
                 "rlx_mouvement",
                 "rlx_materiaux",
@@ -137,6 +139,7 @@ public class ProductService
             Id = e.Id,
             Name = e.GetAttributeValue<string>("name") ?? "",
             Description = e.GetAttributeValue<string>("description"),
+            DescriptionEn = e.GetAttributeValue<string>("rlx_description_en"),
             Price = 0,
             ImageBase64 = imageBytes != null
                 ? $"data:image/png;base64,{Convert.ToBase64String(imageBytes)}"
