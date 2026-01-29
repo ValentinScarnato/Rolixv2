@@ -90,7 +90,12 @@
                                     <div class="card-separator"></div>
 
                                     <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6); margin-bottom: 15px; height: 3.6em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
-                                        @(product.Description ?? "L'élégance intemporelle.")
+                                        @{
+                                            var description = HttpContext.Session.GetString(Rolix.Web.Models.SessionKeys.Language) == "en" && !string.IsNullOrEmpty(product.DescriptionEn)
+                                                ? product.DescriptionEn
+                                                : product.Description ?? "L'élégance intemporelle.";
+                                        }
+                                        @description
                                     </p>
 
                                     <p class="price">@CurrencyHelper.FormatPrice(product.Price, currency)</p>

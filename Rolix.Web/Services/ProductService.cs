@@ -73,8 +73,8 @@ public class ProductService
 
         var query = new QueryExpression("product")
         {
-            // On récupère nom, description et image
-            ColumnSet = new ColumnSet("productid", "name", "description", "entityimage"),
+            // On récupère nom, description, description EN et image
+            ColumnSet = new ColumnSet("productid", "name", "description", "rlx_description_en", "entityimage"),
 
             // IMPORTANT : On retire TopCount ici pour scanner tout le catalogue
             // sinon on rate les montres chères si elles ne sont pas dans les premières lignes
