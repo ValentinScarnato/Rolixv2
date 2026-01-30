@@ -8,17 +8,31 @@ using QuestPDF.Fluent;
 
 namespace Rolix.Web.Services
 {
+    /// <summary>
+    /// Service de gestion des factures et des produits achetés.
+    /// Permet de récupérer les factures d'un client, de générer des PDF, et de gérer les évaluations.
+    /// </summary>
     public class InvoiceService
     {
         private readonly DataverseService _dataverse;
         private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment _env;
 
+        /// <summary>
+        /// Initialise une nouvelle instance du service de factures.
+        /// </summary>
+        /// <param name="dataverse">Service de connexion à Dataverse</param>
+        /// <param name="env">Environnement d'hébergement web pour accéder aux ressources</param>
         public InvoiceService(DataverseService dataverse, Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
             _dataverse = dataverse;
             _env = env;
         }
 
+        /// <summary>
+        /// Récupère toutes les factures d'un client spécifique.
+        /// </summary>
+        /// <param name="contactId">ID du contact client dans Dataverse</param>
+        /// <returns>Liste des factures triées par date de création décroissante</returns>
         public List<Invoice> GetInvoicesForContact(Guid contactId)
         {
             var client = _dataverse.GetClient();
@@ -34,6 +48,11 @@ namespace Rolix.Web.Services
             return result.Entities.Select(MapInvoice).ToList();
         }
 
+        /// <summary>
+        /// Met à jour la note client d'une facture.
+        /// </summary>
+        /// <param name="invoiceId">ID de la facture à évaluer</param>
+        /// <param name="rating">Note de 1 à 5 étoiles (valeurs hors plage sont ignorées)</param>
         public void UpdateInvoiceRating(Guid invoiceId, int rating)
         {
             if (rating < 1 || rating > 5) return;
@@ -46,6 +65,12 @@ namespace Rolix.Web.Services
 
 
 
+        /// <summary>
+        /// Récupère tous les produits achetés par un client via ses factures.
+        /// Utilisé pour afficher les produits éligibles aux demandes SAV.
+        /// </summary>
+        /// <param name="contactId">ID du contact client dans Dataverse</param>
+        /// <returns>Liste des produits achetés avec leurs détails (prix, date, etc.)</returns>
         public List<PurchasedProduct> GetPurchasedProductsForContact(Guid contactId)
         {
             var client = _dataverse.GetClient();
@@ -71,6 +96,11 @@ namespace Rolix.Web.Services
             return result.Entities.Select(MapPurchasedProduct).ToList();
         }
 
+        /// <summary>
+        /// Convertit une entité Dataverse "invoicedetail" en objet PurchasedProduct.
+        /// </summary>
+        /// <param name="e">Entité invoicedetail de Dataverse avec les liens vers invoice et product</param>
+        /// <returns>Objet PurchasedProduct avec les informations du produit acheté</returns>
         private static PurchasedProduct MapPurchasedProduct(Entity e)
         {
             var invoiceRef = e.GetAttributeValue<AliasedValue>("invoice.createdon");
@@ -89,6 +119,11 @@ namespace Rolix.Web.Services
             };
         }
 
+        /// <summary>
+        /// Convertit une entité Dataverse "invoice" en objet Invoice.
+        /// </summary>
+        /// <param name="e">Entité invoice de Dataverse</param>
+        /// <returns>Objet Invoice avec les informations de la facture</returns>
         private static Invoice MapInvoice(Entity e)
         {
             return new Invoice
@@ -102,6 +137,13 @@ namespace Rolix.Web.Services
                 CustomerRating = e.GetAttributeValue<int?>("rlx_noteclient")
             };
         }
+        
+        /// <summary>
+        /// Génère un PDF pour une facture spécifique en utilisant QuestPDF.
+        /// Le PDF contient les informations de la facture, du client, et le montant total.
+        /// </summary>
+        /// <param name="invoiceId">ID de la facture à convertir en PDF</param>
+        /// <returns>Tableau d'octets du PDF généré, ou null si la facture n'existe pas</returns>
         public byte[]? GetInvoicePdf(Guid invoiceId)
         {
             var client = _dataverse.GetClient();

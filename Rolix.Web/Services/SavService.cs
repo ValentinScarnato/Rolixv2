@@ -7,15 +7,30 @@ using System.Linq;
 
 namespace Rolix.Web.Services
 {
+    /// <summary>
+    /// Service de gestion des demandes de retour SAV (Service Après-Vente).
+    /// Permet de créer, récupérer et évaluer les demandes SAV pour les produits achetés.
+    /// Inclut une sécurité stricte pour garantir que chaque client ne voit que ses propres demandes.
+    /// </summary>
     public class SavService
     {
         private readonly DataverseService _dataverse;
 
+        /// <summary>
+        /// Initialise une nouvelle instance du service SAV.
+        /// </summary>
+        /// <param name="dataverse">Service de connexion à Dataverse</param>
         public SavService(DataverseService dataverse)
         {
             _dataverse = dataverse;
         }
 
+        /// <summary>
+        /// Récupère toutes les demandes SAV d'un client spécifique.
+        /// Applique un double filtrage (Dataverse + C#) pour garantir la sécurité des données.
+        /// </summary>
+        /// <param name="contactId">ID du contact client dans Dataverse</param>
+        /// <returns>Liste des demandes SAV filtrées et triées par date de réception décroissante</returns>
         public List<SavRequest> GetSavRequestsForContact(Guid contactId)
         {
             var client = _dataverse.GetClient();
@@ -52,6 +67,13 @@ namespace Rolix.Web.Services
         }
 
 
+        /// <summary>
+        /// Vérifie si un client a déjà une demande SAV pour un produit spécifique.
+        /// Utilisé pour empêcher les demandes SAV en double pour le même produit.
+        /// </summary>
+        /// <param name="contactId">ID du contact client</param>
+        /// <param name="productId">ID du produit concerné</param>
+        /// <returns>True si une demande SAV existe déjà, False sinon</returns>
         public bool HasSavRequestForProduct(Guid contactId, Guid productId)
         {
             var client = _dataverse.GetClient();
@@ -77,6 +99,16 @@ namespace Rolix.Web.Services
             });
         }
 
+        /// <summary>
+        /// Crée une nouvelle demande SAV pour un produit acheté.
+        /// Génère automatiquement un numéro de ticket et définit le statut initial à "En Attente".
+        /// </summary>
+        /// <param name="contactId">ID du contact client</param>
+        /// <param name="productId">ID du produit concerné</param>
+        /// <param name="watchModel">Nom/modèle de la montre</param>
+        /// <param name="diagnostic">Description du problème fournie par le client</param>
+        /// <returns>ID de la demande SAV créée</returns>
+        /// <exception cref="InvalidOperationException">Lancée si une demande SAV existe déjà pour ce produit</exception>
         public Guid CreateSavRequest(Guid contactId, Guid productId, string watchModel, string diagnostic)
         {
             // Validation: vérifier si une demande existe déjà
@@ -101,6 +133,11 @@ namespace Rolix.Web.Services
             return client.Create(savRequest);
         }
 
+        /// <summary>
+        /// Met à jour la note client d'une demande SAV.
+        /// </summary>
+        /// <param name="requestId">ID de la demande SAV à évaluer</param>
+        /// <param name="rating">Note de 1 à 5 étoiles (valeurs hors plage sont ignorées)</param>
         public void UpdateSavRequestRating(Guid requestId, int rating)
         {
             if (rating < 1 || rating > 5) return;
@@ -111,6 +148,11 @@ namespace Rolix.Web.Services
             client.Update(savRequest);
         }
 
+        /// <summary>
+        /// Génère un numéro de ticket unique pour une demande SAV.
+        /// Format: SAV-XXX où XXX est un nombre aléatoire entre 100 et 999.
+        /// </summary>
+        /// <returns>Numéro de ticket au format SAV-XXX</returns>
         private string GenerateTicketNumber()
         {
             // Générer un numéro aléatoire à 3 chiffres
@@ -119,6 +161,11 @@ namespace Rolix.Web.Services
             return $"SAV-{number}";
         }
 
+        /// <summary>
+        /// Convertit une entité Dataverse "rlx_retoursav" en objet SavRequest.
+        /// </summary>
+        /// <param name="e">Entité rlx_retoursav de Dataverse</param>
+        /// <returns>Objet SavRequest avec les informations de la demande SAV</returns>
         private static SavRequest MapSavRequest(Entity e)
         {
             // Récupérer le nom du produit depuis l'EntityReference
