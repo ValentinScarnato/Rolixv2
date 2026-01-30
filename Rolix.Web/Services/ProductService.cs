@@ -15,7 +15,6 @@ public class ProductService
         _dataverse = dataverse;
     }
 
-    // 🔹 LISTE DES PRODUITS
     public List<Product> GetAll()
     {
         var client = _dataverse.GetClient();
@@ -65,7 +64,7 @@ public class ProductService
             .ToList();
     }
     // ---------------------------------------------------------
-    // 2. NOUVELLE MÉTHODE (Uniquement pour l'Accueil)
+    // Recupère les 3 produits les plus chers à l'accueil
     // ---------------------------------------------------------
     public List<Product> GetTopExpensiveProducts(int count)
     {
@@ -73,11 +72,7 @@ public class ProductService
 
         var query = new QueryExpression("product")
         {
-            // On récupère nom, description, description EN et image
             ColumnSet = new ColumnSet("productid", "name", "description", "rlx_description_en", "entityimage"),
-
-            // IMPORTANT : On retire TopCount ici pour scanner tout le catalogue
-            // sinon on rate les montres chères si elles ne sont pas dans les premières lignes
         };
 
         query.Criteria.AddCondition("productstructure", ConditionOperator.NotEqual, ProductStructureFamily);
@@ -86,10 +81,8 @@ public class ProductService
 
         var products = result.Entities.Select(MapProduct).ToList();
 
-        // 1. On récupère les prix
         ApplyPricesFromPriceListItems(products);
 
-        // 2. On trie par prix décroissant ET on prend les 'count' premiers
         return products
             .Where(p => p.Price > 0)
             .OrderByDescending(p => p.Price)
@@ -97,7 +90,6 @@ public class ProductService
             .ToList();
     }
 
-    // 🔹 DÉTAIL D’UN PRODUIT
     public Product? GetById(Guid id)
     {
         var client = _dataverse.GetClient();
@@ -128,8 +120,6 @@ public class ProductService
         product.Price = GetPriceForProduct(product.Id);
         return product;
     }
-
-    // 🔹 Mapping centralisé
     private static Product MapProduct(Entity e)
     {
         var imageBytes = e.GetAttributeValue<byte[]>("entityimage");
@@ -160,13 +150,13 @@ public class ProductService
 
         query.Criteria.AddCondition("productstructure", ConditionOperator.NotEqual, ProductStructureFamily);
 
-        // 1. FILTRE RECHERCHE (Par nom)
+        // 1. FILTRE RECHERCHE
         if (!string.IsNullOrEmpty(search))
         {
             query.Criteria.AddCondition("name", ConditionOperator.Like, $"%{search}%");
         }
 
-        // 2. FILTRE FAMILLE (produit parent)
+        // 2. FILTRE FAMILLE
         if (familyId.HasValue)
         {
             query.Criteria.AddCondition("parentproductid", ConditionOperator.Equal, familyId.Value);

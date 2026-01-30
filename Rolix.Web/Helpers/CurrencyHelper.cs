@@ -2,7 +2,7 @@ namespace Rolix.Web.Helpers;
 
 public static class CurrencyHelper
 {
-    private const decimal EUR_TO_CHF_RATE = 0.95m; // 1 EUR = 0.95 CHF (taux approximatif)
+    private const decimal EUR_TO_CHF_RATE = 0.95m; // 1 EUR = 0.95 CHF
     
     public static decimal ConvertPrice(decimal priceInCHF, string currency)
     {
